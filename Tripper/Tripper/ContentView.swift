@@ -17,15 +17,20 @@ struct ContentView: View {
             ZStack {
                 switch selection {
                 case 0:
-                    Text("Tab1")
+                    //開銷-拆帳
+                    CostView()
                 case 1:
-                    Text("Tab2")
+                    //相簿
+                    PhotoView()
                 case 2:
-                    Text("Tab3")
+                    //行程schedule
+                    ScheduleView()
                 case 3:
-                    Text("Tab4")
+                    //留言板
+                    PostView()
                 case 4:
-                    Text("Tab5")
+                    //個人記事本
+                    NoteView()
                 default:
                     Text("default")
                 }
