@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var selection = 0
+    @State var selection = 2
     
     var body: some View {
         VStack {
@@ -98,24 +98,24 @@ struct TabView: View {
 }
 
 enum TabItemType: String {
-    case tab1 = "Tab1"
-    case tab2 = "Tab2"
-    case tab3 = "Tab3"
-    case tab4 = "Tab4"
-    case tab5 = "Tab5"
+    case tab1 = "Cost"
+    case tab2 = "Photo"
+    case tab3 = "Schedule"
+    case tab4 = "Post"
+    case tab5 = "Note"
     
     var image: Image {
         switch self {
         case .tab1:
-            return Image(systemName: "magnifyingglass")
+            return Image(systemName: "dollarsign.circle")
         case .tab2:
-            return Image(systemName: "magnifyingglass")
+            return Image(systemName: "person.circle")
         case .tab3:
-            return Image(systemName: "magnifyingglass")
+            return Image(systemName: "clock.circle")
         case .tab4:
-            return Image(systemName: "magnifyingglass")
+            return Image(systemName: "pencil.tip.crop.circle")
         case .tab5:
-            return Image(systemName: "magnifyingglass")
+            return Image(systemName: "list.bullet.circle")
         }
     }
     var text: Text {
