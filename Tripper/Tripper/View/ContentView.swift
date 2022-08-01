@@ -9,10 +9,11 @@ import SwiftUI
 
 struct ContentView: View {
     @State var selection = 2
+    @State private var showingTripList = false
     
     var body: some View {
         VStack {
-            NavView()
+            NavView(showingTripList: $showingTripList)
             Spacer()
             ZStack {
                 switch selection {
@@ -38,6 +39,14 @@ struct ContentView: View {
             Spacer()
             TabView(index: $selection)
         }
+        .confirmationDialog("test", isPresented: $showingTripList) {
+            Button {
+//                showingTripList = false
+                
+            } label: {
+                Text("Add Trip")
+            }
+        }
     }
 }
 
@@ -48,9 +57,19 @@ struct ContentView_Previews: PreviewProvider {
 }
 
 struct NavView: View {
+    @Binding var showingTripList: Bool
     var body: some View {
         HStack {
-            Text("Trip Name")
+            Button {
+                //alert列表出來
+                //最底下是新增旅行
+                //點擊新增旅行
+                //彈出textfield底下待確定跟取消按鈕
+                //輸入完按確定儲存資料
+                showingTripList = true
+            } label: {
+                Text("Trip Name")
+            }
             Spacer()
             Text("Setting")
         }.padding()
