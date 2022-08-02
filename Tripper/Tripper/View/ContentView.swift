@@ -10,6 +10,8 @@ import SwiftUI
 struct ContentView: View {
     @State var selection = 2
     @State private var showingTripList = false
+    @State var showingAddTripTextFieldAlert = false
+    @State var text = "Text to change test"
     
     var body: some View {
         VStack {
@@ -41,12 +43,14 @@ struct ContentView: View {
         }
         .confirmationDialog("test", isPresented: $showingTripList) {
             Button {
-//                showingTripList = false
-                
+                showingAddTripTextFieldAlert = true
             } label: {
                 Text("Add Trip")
             }
         }
+        .textFieldAlert(isPresented: $showingAddTripTextFieldAlert, title: "Some Title Test", text: $text, placeholder: "Placeholder") { text in
+            print(text)
+        }.padding()
     }
 }
 
@@ -61,11 +65,6 @@ struct NavView: View {
     var body: some View {
         HStack {
             Button {
-                //alert列表出來
-                //最底下是新增旅行
-                //點擊新增旅行
-                //彈出textfield底下待確定跟取消按鈕
-                //輸入完按確定儲存資料
                 showingTripList = true
             } label: {
                 Text("Trip Name")
@@ -166,5 +165,69 @@ struct TabItemView: View {
                     .foregroundColor(Color(red: 22/255, green: 80/255, blue: 142/255))
             }
         }
+    }
+}
+
+struct TextFieldAlert: ViewModifier {
+    @Binding var isPresented: Bool
+    let title: String
+    @Binding var text: String
+    let placeholder: String
+    let action: (String) -> Void
+    func body(content: Content) -> some View {
+        ZStack(alignment: .center){
+            content.disabled(isPresented)
+            if isPresented {
+                VStack{
+                    Text(title).font(.headline).padding()
+                    TextField(placeholder,text:$text).textFieldStyle(.roundedBorder).padding()
+                    Divider()
+                    HStack{
+                        Spacer()
+                        Button(role: .cancel) {
+                            withAnimation {
+                                isPresented.toggle()
+                            }
+                        } label: {
+                            Text("Cancel")
+                        }
+                        Spacer()
+                        Divider()
+                        Spacer()
+                        Button {
+                            action(text)
+                            withAnimation {
+                                isPresented.toggle()
+                            }
+                        } label: {
+                            Text("Done")
+                        }
+                        Spacer()
+                    }
+                }
+                .background(.background)
+                .frame(
+                    width: 300,
+                    height: 200
+                )
+                .cornerRadius(20)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(.quaternary,lineWidth: 1)
+                }
+            }
+        }
+    }
+}
+
+extension View {
+    public func textFieldAlert(
+        isPresented: Binding<Bool>,
+        title:String,
+        text:Binding<String>,
+        placeholder:String="",
+        action:@escaping (String) -> Void
+    ) -> some View {
+        self.modifier(TextFieldAlert(isPresented: isPresented, title: title, text: text, placeholder: placeholder, action: action))
     }
 }
