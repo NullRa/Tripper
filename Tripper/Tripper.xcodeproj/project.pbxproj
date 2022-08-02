@@ -17,6 +17,7 @@
 		1856B37C28978A9D0054BCC7 /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1856B37B28978A9D0054BCC7 /* PostView.swift */; };
 		1856B37E28978AAF0054BCC7 /* NoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1856B37D28978AAF0054BCC7 /* NoteView.swift */; };
 		1856B3822897A67A0054BCC7 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1856B3812897A67A0054BCC7 /* UserDefaultsManager.swift */; };
+		1856B385289912490054BCC7 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1856B384289912490054BCC7 /* ContentViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		1856B37B28978A9D0054BCC7 /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		1856B37D28978AAF0054BCC7 /* NoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteView.swift; sourceTree = "<group>"; };
 		1856B3812897A67A0054BCC7 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
+		1856B384289912490054BCC7 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +67,7 @@
 			children = (
 				1829A5682893B5DF004522D0 /* TripperApp.swift */,
 				1856B3802897A6610054BCC7 /* Manager */,
+				1856B3832899122F0054BCC7 /* Model */,
 				1856B37F2897A64E0054BCC7 /* View */,
 				1829A56C2893B5E0004522D0 /* Assets.xcassets */,
 				1829A56E2893B5E0004522D0 /* Preview Content */,
@@ -99,6 +102,14 @@
 				1856B3812897A67A0054BCC7 /* UserDefaultsManager.swift */,
 			);
 			path = Manager;
+			sourceTree = "<group>";
+		};
+		1856B3832899122F0054BCC7 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				1856B384289912490054BCC7 /* ContentViewModel.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -176,6 +187,7 @@
 				1829A5692893B5DF004522D0 /* TripperApp.swift in Sources */,
 				1856B376289788FF0054BCC7 /* CostView.swift in Sources */,
 				1856B37C28978A9D0054BCC7 /* PostView.swift in Sources */,
+				1856B385289912490054BCC7 /* ContentViewModel.swift in Sources */,
 				1856B37E28978AAF0054BCC7 /* NoteView.swift in Sources */,
 				1856B3822897A67A0054BCC7 /* UserDefaultsManager.swift in Sources */,
 				1856B37828978A080054BCC7 /* PhotoView.swift in Sources */,

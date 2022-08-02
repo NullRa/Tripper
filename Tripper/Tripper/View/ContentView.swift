@@ -8,17 +8,23 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var selection = 2
+    @State var tabSelection = 2
+    @State var tripListIndex: Int?
     @State private var showingTripList = false
     @State var showingAddTripTextFieldAlert = false
-    @State var text = "Text to change test"
+    @State var textFieldEnter = ""
+    @ObservedObject var contentViewModel = ContentViewModel.shared
+    
     
     var body: some View {
         VStack {
-            NavView(showingTripList: $showingTripList)
+            NavView(showingTripList: $showingTripList,
+                    showingAddTripTextFieldAlert: $showingAddTripTextFieldAlert,
+                    tripListIndex: $tripListIndex,
+                    contentViewModel: contentViewModel)
             Spacer()
             ZStack {
-                switch selection {
+                switch tabSelection {
                 case 0:
                     //開銷-拆帳
                     CostView()
@@ -39,18 +45,38 @@ struct ContentView: View {
                 }
             }
             Spacer()
-            TabView(index: $selection)
+            TabView(index: $tabSelection)
         }
+        .onAppear(perform: {
+            if !contentViewModel.tripList.isEmpty {
+                tripListIndex = 0
+            }
+        })
         .confirmationDialog("test", isPresented: $showingTripList) {
+            //note_forEach取得index,element
+            //https://stackoverflow.com/questions/57244713/get-index-in-foreach-in-swiftui
+            //array.enumerated()
+            //ForEach(contentViewModel.tripList) { tripName in}
+            
+            ForEach(Array(contentViewModel.tripList.enumerated()), id: \.offset) { index, tripName in
+                Button {
+                    //fixme切換旅程資料
+                    tripListIndex = index
+                } label: {
+                    Text(tripName)
+                }
+            }
+            
             Button {
                 showingAddTripTextFieldAlert = true
             } label: {
-                Text("Add Trip")
+                Text("新增旅程")
             }
         }
-        .textFieldAlert(isPresented: $showingAddTripTextFieldAlert, title: "Some Title Test", text: $text, placeholder: "Placeholder") { text in
-            print(text)
-        }.padding()
+        .textFieldAlert(isPresented: $showingAddTripTextFieldAlert, title: "輸入旅程名稱", text: $textFieldEnter, placeholder: "輸入旅程名稱") { tripName in
+            contentViewModel.addTrip(tripName: tripName)
+            tripListIndex = contentViewModel.tripList.lastIndex(of: tripName)
+        }
     }
 }
 
@@ -62,15 +88,28 @@ struct ContentView_Previews: PreviewProvider {
 
 struct NavView: View {
     @Binding var showingTripList: Bool
+    @Binding var showingAddTripTextFieldAlert: Bool
+    @Binding var tripListIndex: Int?
+    @ObservedObject var contentViewModel: ContentViewModel
     var body: some View {
         HStack {
             Button {
-                showingTripList = true
+                if contentViewModel.tripList.isEmpty {
+                    showingAddTripTextFieldAlert = true
+                } else {
+                    showingTripList = true
+                }
             } label: {
-                Text("Trip Name")
+                if contentViewModel.tripList.isEmpty {
+                    Text("新增旅程")
+                } else {
+                    Text("切換旅程")
+                }
             }
             Spacer()
-            Text("Setting")
+            Text(tripListIndex==nil ? "請先新增旅行" : contentViewModel.tripList[tripListIndex!])
+            Spacer()
+            Text("設定")
         }.padding()
     }
 }
@@ -169,6 +208,8 @@ struct TabItemView: View {
 }
 
 struct TextFieldAlert: ViewModifier {
+    //note_alert textfield
+    //https://stackoverflow.com/questions/72446462/showing-textfield-in-alert-function-at-swiftui
     @Binding var isPresented: Bool
     let title: String
     @Binding var text: String
@@ -189,7 +230,7 @@ struct TextFieldAlert: ViewModifier {
                                 isPresented.toggle()
                             }
                         } label: {
-                            Text("Cancel")
+                            Text("取消")
                         }
                         Spacer()
                         Divider()
@@ -200,7 +241,7 @@ struct TextFieldAlert: ViewModifier {
                                 isPresented.toggle()
                             }
                         } label: {
-                            Text("Done")
+                            Text("確認")
                         }
                         Spacer()
                     }
@@ -229,5 +270,13 @@ extension View {
         action:@escaping (String) -> Void
     ) -> some View {
         self.modifier(TextFieldAlert(isPresented: isPresented, title: title, text: text, placeholder: placeholder, action: action))
+    }
+}
+extension String: Identifiable {
+    //note_讓String可以進array
+    //https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
+    public typealias ID = Int
+    public var id: Int {
+        return hash
     }
 }
