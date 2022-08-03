@@ -14,7 +14,7 @@ struct ContentView: View {
     @State var showingAddTripTextFieldAlert = false
     @State var textFieldEnter = ""
     @State var showingAddScheduleView = false
-    @ObservedObject var contentViewModel = ContentViewModel.shared
+    @ObservedObject var tripDataManager = TripDataManager.shared
     
     
     var body: some View {
@@ -22,7 +22,7 @@ struct ContentView: View {
             NavView(showingTripList: $showingTripList,
                     showingAddTripTextFieldAlert: $showingAddTripTextFieldAlert,
                     tripListIndex: $tripListIndex,
-                    contentViewModel: contentViewModel)
+                    tripDataManager: tripDataManager)
             Spacer()
             ZStack {
                 switch tabSelection {
@@ -49,7 +49,7 @@ struct ContentView: View {
             TabView(index: $tabSelection)
         }
         .onAppear(perform: {
-            if !contentViewModel.tripList.isEmpty {
+            if !tripDataManager.tripDataArray.isEmpty {
                 tripListIndex = 0
             }
         })
@@ -64,12 +64,12 @@ struct ContentView: View {
             //array.enumerated()
             //ForEach(contentViewModel.tripList) { tripName in}
             
-            ForEach(Array(contentViewModel.tripList.enumerated()), id: \.offset) { index, tripName in
+            ForEach(Array(tripDataManager.tripDataArray.enumerated()), id: \.offset) { index, tripData in
                 Button {
                     //fixme切換旅程資料
                     tripListIndex = index
                 } label: {
-                    Text(tripName)
+                    Text(tripData.tripName)
                 }
             }
             
@@ -80,8 +80,8 @@ struct ContentView: View {
             }
         }
         .textFieldAlert(isPresented: $showingAddTripTextFieldAlert, title: "輸入旅程名稱", text: $textFieldEnter, placeholder: "輸入旅程名稱") { tripName in
-            contentViewModel.addTrip(tripName: tripName)
-            tripListIndex = contentViewModel.tripList.lastIndex(of: tripName)
+            tripDataManager.addTrip(tripName: tripName)
+            tripListIndex = tripDataManager.tripDataArray.count-1
         }
     }
 }
@@ -96,24 +96,26 @@ struct NavView: View {
     @Binding var showingTripList: Bool
     @Binding var showingAddTripTextFieldAlert: Bool
     @Binding var tripListIndex: Int?
-    @ObservedObject var contentViewModel: ContentViewModel
+//    @ObservedObject var contentViewModel: ContentViewModel
+    @ObservedObject var tripDataManager: TripDataManager
     var body: some View {
         HStack {
             Button {
-                if contentViewModel.tripList.isEmpty {
+                if tripDataManager.tripDataArray.isEmpty {
                     showingAddTripTextFieldAlert = true
                 } else {
                     showingTripList = true
                 }
             } label: {
-                if contentViewModel.tripList.isEmpty {
+                if tripDataManager.tripDataArray.isEmpty {
                     Text("新增旅程")
                 } else {
                     Text("切換旅程")
                 }
             }
             Spacer()
-            Text(tripListIndex==nil ? "請先新增旅行" : contentViewModel.tripList[tripListIndex!])
+//            Text(tripListIndex==nil ? "請先新增旅行" : contentViewModel.tripList[tripListIndex!])
+            Text(tripListIndex==nil ? "請先新增旅行" : tripDataManager.tripDataArray[tripListIndex!].tripName)
             Spacer()
             Text("設定")
         }.padding()

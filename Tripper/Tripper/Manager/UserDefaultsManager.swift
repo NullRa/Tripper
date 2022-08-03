@@ -10,45 +10,46 @@ import Foundation
 class UserDefaultsManager {
     static let shared = UserDefaultsManager()
     
-    func saveMediaIcons(iconsDict: [String:String]){
-        UserDefaults.standard.set(iconsDict, forKey: "SavedMediaIcons")
-    }
-    
-    func loadMediaIcons() -> [String:String]{
-        return UserDefaults.standard.value(forKey: "SavedMediaIcons") as? [String:String] ?? [:]
-    }
-    
-//    func saveMemberInfo(memberInfo: CamerabayMemberInfo) {
-//        if let encoded = try? JSONEncoder().encode(memberInfo) {
-//            UserDefaults.standard.set(encoded, forKey: "SavedMemberInfo")
+//    func saveMediaIcons(iconsDict: [String:String]){
+//        UserDefaults.standard.set(iconsDict, forKey: "SavedMediaIcons")
+//    }
+//    func loadMediaIcons() -> [String:String]{
+//        return UserDefaults.standard.value(forKey: "SavedMediaIcons") as? [String:String] ?? [:]
+//    }
+//    
+//    func saveTripProjectArray(list:[String]){
+//        UserDefaults.standard.set(list, forKey: "SavedTripProjectList")
+//    }
+//    func loadTripProjectArray() -> [String]? {
+//        if let saveTripProjectArray = UserDefaults.standard.object(forKey: "SavedTripProjectList") as? [String] {
+//            return saveTripProjectArray
+//        }
+//        return nil
+//    }
+//    
+//    func saveScheduleArray(scheduleNameDatas: [ScheduleData]){
+//        if let encoded = try? JSONEncoder().encode(scheduleNameDatas) {
+//            UserDefaults.standard.set(encoded, forKey: "SavedScheduleNameDataArray")
 //        }
 //    }
-//
-//    func loadMemberInfo() -> CamerabayMemberInfo? {
-//        if let savedMemberInfo = UserDefaults.standard.object(forKey: "SavedMemberInfo") as? Data {
+//    func loadScheduleArray() -> [ScheduleData]? {
+//        if let savedScheduleArray = UserDefaults.standard.object(forKey: "SavedScheduleNameDataArray") as? Data {
 //            let decoder = JSONDecoder()
-//            return try? decoder.decode(CamerabayMemberInfo.self, from: savedMemberInfo)
+//            return try? decoder.decode([ScheduleData].self, from: savedScheduleArray)
 //        }
 //        return nil
 //    }
     
-    func saveTripProjectArray(list:[String]){
-        UserDefaults.standard.set(list, forKey: "TripProjectList")
+    func saveTripDataArray(tripDataArray: [TripData]){
+        if let encoded = try? JSONEncoder().encode(tripDataArray) {
+            UserDefaults.standard.set(encoded, forKey: "SavedTripDataArray")
+        }
     }
-    func loadTripProjectArray() -> [String]? {
-        if let saveTripProjectArray = UserDefaults.standard.object(forKey: "TripProjectList") as? [String] {
-            return saveTripProjectArray
+    func loadTripDataArray() -> [TripData]? {
+        if let savedTripDataArray = UserDefaults.standard.object(forKey: "SavedTripDataArray") as? Data {
+            let decoder = JSONDecoder()
+            return try? decoder.decode([TripData].self, from: savedTripDataArray)
         }
         return nil
     }
 }
-
-/*
- let array = ["Hello", "Swift"]
- defaults.set(array, forKey: "SavedArray")
-
- let dict = ["Name": "Jack", "Country": "Tw"]
- defaults.set(dict, forKey: "SavedDict")
- 
- object(forKey:) returns AnyObject? so you need to conditionally typecast it to your data type.
- */

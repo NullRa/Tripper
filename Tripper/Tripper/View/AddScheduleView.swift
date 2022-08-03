@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AddScheduleView: View {
     @Environment(\.dismiss) var dismiss
-    @State var tripName:String = ""
+    @State var scheduleName:String = ""
     @State private var startTime = Date()
     @State private var endTime = Date()
     
@@ -29,14 +29,15 @@ struct AddScheduleView: View {
                     .padding()
                 Spacer()
                 Button {
-                    print("加入")
+                    let scheduleNameData = ScheduleData(scheduleName: scheduleName, startTime: startTime, endTime: endTime)
+                    
                 } label: {
                     Text("加入")
                         .padding()
                 }
             }
             Form {
-                TextField("標題", text: $tripName)
+                TextField("標題", text: $scheduleName)
                     .font(.system(size: 20, weight: .semibold, design: .rounded))
                 DatePicker("起始時間", selection: $startTime)
                 DatePicker("結束時間", selection: $endTime)
