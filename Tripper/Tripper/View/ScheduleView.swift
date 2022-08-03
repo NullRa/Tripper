@@ -8,13 +8,38 @@
 import SwiftUI
 
 struct ScheduleView: View {
+    @Binding var showingAddScheduleView:Bool
     var body: some View {
-        Text("Schedule View")
+        VStack {
+            Spacer()
+            Text("Schedule View")
+            Spacer()
+            HStack{
+                Spacer()
+                Button {
+                    showingAddScheduleView = true
+                } label: {
+                    Circle()
+                        .foregroundColor(.green)
+                        .frame(width:80, height: 80)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 5)
+                                .foregroundColor(.white)
+                                .frame(width: 20, height: 20)
+                                .overlay(content: {
+                                    Text("A")
+                                        .foregroundColor(.red)
+                                        .font(.title)
+                                })
+                        )
+                }
+            }
+        }
     }
 }
 
 struct ScheduleView_Previews: PreviewProvider {
     static var previews: some View {
-        ScheduleView()
+        ScheduleView(showingAddScheduleView: .constant(false))
     }
 }

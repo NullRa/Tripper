@@ -13,6 +13,7 @@ struct ContentView: View {
     @State private var showingTripList = false
     @State var showingAddTripTextFieldAlert = false
     @State var textFieldEnter = ""
+    @State var showingAddScheduleView = false
     @ObservedObject var contentViewModel = ContentViewModel.shared
     
     
@@ -33,7 +34,7 @@ struct ContentView: View {
                     PhotoView()
                 case 2:
                     //行程schedule
-                    ScheduleView()
+                    ScheduleView(showingAddScheduleView: $showingAddScheduleView)
                 case 3:
                     //留言板
                     PostView()
@@ -52,6 +53,11 @@ struct ContentView: View {
                 tripListIndex = 0
             }
         })
+        .fullScreenCover(isPresented: $showingAddScheduleView) {
+            self.showingAddScheduleView = false
+        } content: {
+            AddScheduleView()
+        }
         .confirmationDialog("test", isPresented: $showingTripList) {
             //note_forEach取得index,element
             //https://stackoverflow.com/questions/57244713/get-index-in-foreach-in-swiftui
