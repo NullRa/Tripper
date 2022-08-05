@@ -29,8 +29,8 @@ struct AddScheduleView: View {
                     .padding()
                 Spacer()
                 Button {
-                    let scheduleNameData = ScheduleData(scheduleName: scheduleName, startTime: startTime, endTime: endTime)
-                    
+                    let scheduleNameData = ScheduleData(scheduleName: scheduleName, startDate: startTime, endDate: endTime)
+                    print("add sechedule")
                 } label: {
                     Text("加入")
                         .padding()
