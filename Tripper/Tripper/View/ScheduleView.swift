@@ -9,11 +9,29 @@ import SwiftUI
 
 struct ScheduleView: View {
     @Binding var showingAddScheduleView:Bool
+    var tripData: TripData = TripData(tripName: "Test Trip",
+                                      scheduleDataArray: [
+                                        ScheduleData(scheduleName: "Schedule1", startDate: Date(), endDate: Date()),
+                                        ScheduleData(scheduleName: "Schedule2", startDate: Date(), endDate: Date()),
+                                        ScheduleData(scheduleName: "Schedule3", startDate: Date(), endDate: Date())
+                                      ]
+    )
     var body: some View {
         VStack {
-            Spacer()
-            Text("Schedule View")
-            Spacer()
+            NavigationView {
+                List {
+                    ForEach(tripData.getScheduleInDateList()) { scheduleInDateList in
+                        Section {
+                            ForEach(scheduleInDateList.schedule_in_date_list) { schedule in
+                                ScheduleRow(scheduleInDate: schedule)
+                            }
+                        } header: {
+                            Text(scheduleInDateList.schedule_date)
+                        }
+
+                    }
+                }.navigationTitle(tripData.tripName)
+            }
             HStack{
                 Spacer()
                 Button {
@@ -43,3 +61,29 @@ struct ScheduleView_Previews: PreviewProvider {
         ScheduleView(showingAddScheduleView: .constant(false))
     }
 }
+
+struct ScheduleRow: View {
+    var scheduleInDate: ScheduleInDate
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading) {
+                Text(scheduleInDate.schedule_name)
+                    .font(.system(.body, design: .rounded))
+                    .bold()
+                
+                Text(scheduleInDate.schedule_start_time + " ~ " + scheduleInDate.schedule_end_time)
+                    .font(.system(.subheadline, design: .rounded))
+                    .bold()
+                    .foregroundColor(.secondary)
+                    .lineLimit(3)
+            }
+            
+            Spacer()
+            //                .layoutPriority(-100)
+        }
+    }
+}
+
+//
+
+

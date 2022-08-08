@@ -9,13 +9,76 @@ import Foundation
 
 struct TripData: Codable {
     var tripName: String
-    var scheduleDataArray: [ScheduleData] = []
+    var scheduleDataArray: [ScheduleData]
+    func getScheduleInDateList() -> [ScheduleInDateList] {
+        var scheduleInDateList:[ScheduleInDateList] = []
+//        https://ithelp.ithome.com.tw/articles/10267421
+//        note_outerloop說明,跳出最外層迴圈
+    outerloop:for scheduleData in scheduleDataArray {
+        let date = scheduleData.getDateString()
+        let startTime = scheduleData.getStartTimeString()
+        let endTime = scheduleData.getEndTimeString()
+        let name = scheduleData.scheduleName
+        let newData = ScheduleInDate(schedule_name: name, schedule_start_time: startTime, schedule_end_time: endTime)
+        
+        for i in 0 ..< scheduleInDateList.count {
+            if scheduleInDateList[i].schedule_date == date {
+                scheduleInDateList[i].schedule_in_date_list.append(newData)
+                continue outerloop
+            }
+        }
+        let newlistData = ScheduleInDateList(schedule_date: date, schedule_in_date_list: [newData])
+        scheduleInDateList.append(newlistData)
+    }
+        return scheduleInDateList
+    }
 }
 
-struct ScheduleData: Codable {
+struct ScheduleData: Codable, Identifiable {
+    var id = UUID()
     var scheduleName: String
-    var startTime: Date
-    var endTime: Date
+    var startDate: Date
+    var endDate: Date
+    //    https://ithelp.ithome.com.tw/articles/10205438
+    //    note_日期格式使用
+    func getDateString() -> String{
+        let timeZone = NSTimeZone.local
+        let formatter = DateFormatter()
+        formatter.timeZone = timeZone
+        formatter.dateFormat = "yyyy-MM-dd"
+        let date = formatter.string(from: startDate)
+        return date
+    }
+    
+    func getStartTimeString() -> String{
+        let timeZone = NSTimeZone.local
+        let formatter = DateFormatter()
+        formatter.timeZone = timeZone
+        formatter.dateFormat = "HH:mm"
+        let date = formatter.string(from: startDate)
+        return date
+    }
+    
+    func getEndTimeString() -> String{
+        let timeZone = NSTimeZone.local
+        let formatter = DateFormatter()
+        formatter.timeZone = timeZone
+        formatter.dateFormat = "HH:mm"
+        let date = formatter.string(from: endDate)
+        return date
+    }
+}
+
+struct ScheduleInDateList: Identifiable {
+    var id = UUID()
+    var schedule_date: String
+    var schedule_in_date_list: [ScheduleInDate]
+}
+struct ScheduleInDate: Identifiable {
+    var id = UUID()
+    var schedule_name: String
+    var schedule_start_time: String
+    var schedule_end_time: String
 }
 
 class TripDataManager: ObservableObject {
