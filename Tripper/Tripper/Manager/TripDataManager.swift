@@ -12,8 +12,8 @@ struct TripData: Codable {
     var scheduleDataArray: [ScheduleData]
     func getScheduleInDateList() -> [ScheduleInDateList] {
         var scheduleInDateList:[ScheduleInDateList] = []
-//        https://ithelp.ithome.com.tw/articles/10267421
-//        note_outerloop說明,跳出最外層迴圈
+        //        https://ithelp.ithome.com.tw/articles/10267421
+        //        note_outerloop說明,跳出最外層迴圈
     outerloop:for scheduleData in scheduleDataArray {
         let date = scheduleData.getDateString()
         let startTime = scheduleData.getStartTimeString()
@@ -37,8 +37,9 @@ struct TripData: Codable {
 struct ScheduleData: Codable, Identifiable {
     var id = UUID()
     var scheduleName: String
-    var startDate: Date
-    var endDate: Date
+    var scheduleDate: Date
+    var scheduleStartTime: Date
+    var scheduleEndTime: Date
     //    https://ithelp.ithome.com.tw/articles/10205438
     //    note_日期格式使用
     func getDateString() -> String{
@@ -46,7 +47,7 @@ struct ScheduleData: Codable, Identifiable {
         let formatter = DateFormatter()
         formatter.timeZone = timeZone
         formatter.dateFormat = "yyyy-MM-dd"
-        let date = formatter.string(from: startDate)
+        let date = formatter.string(from: scheduleDate)
         return date
     }
     
@@ -55,7 +56,7 @@ struct ScheduleData: Codable, Identifiable {
         let formatter = DateFormatter()
         formatter.timeZone = timeZone
         formatter.dateFormat = "HH:mm"
-        let date = formatter.string(from: startDate)
+        let date = formatter.string(from: scheduleStartTime)
         return date
     }
     
@@ -64,7 +65,7 @@ struct ScheduleData: Codable, Identifiable {
         let formatter = DateFormatter()
         formatter.timeZone = timeZone
         formatter.dateFormat = "HH:mm"
-        let date = formatter.string(from: endDate)
+        let date = formatter.string(from: scheduleEndTime)
         return date
     }
 }

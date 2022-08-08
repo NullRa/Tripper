@@ -9,11 +9,12 @@ import SwiftUI
 
 struct ScheduleView: View {
     @Binding var showingAddScheduleView:Bool
+    
     var tripData: TripData = TripData(tripName: "Test Trip",
                                       scheduleDataArray: [
-                                        ScheduleData(scheduleName: "Schedule1", startDate: Date(), endDate: Date()),
-                                        ScheduleData(scheduleName: "Schedule2", startDate: Date(), endDate: Date()),
-                                        ScheduleData(scheduleName: "Schedule3", startDate: Date(), endDate: Date())
+                                        ScheduleData(scheduleName: "S1", scheduleDate: Date(), scheduleStartTime: Date(), scheduleEndTime: Date()),
+                                        ScheduleData(scheduleName: "S2", scheduleDate: Date(), scheduleStartTime: Date(), scheduleEndTime: Date()),
+                                        ScheduleData(scheduleName: "S3", scheduleDate: Date(), scheduleStartTime: Date(), scheduleEndTime: Date())
                                       ]
     )
     var body: some View {
@@ -28,7 +29,7 @@ struct ScheduleView: View {
                         } header: {
                             Text(scheduleInDateList.schedule_date)
                         }
-
+                        
                     }
                 }.navigationTitle(tripData.tripName)
             }
@@ -83,7 +84,3 @@ struct ScheduleRow: View {
         }
     }
 }
-
-//
-
-

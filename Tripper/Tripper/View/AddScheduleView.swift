@@ -12,6 +12,7 @@ struct AddScheduleView: View {
     @State var scheduleName:String = ""
     @State private var startTime = Date()
     @State private var endTime = Date()
+    @State private var schedulDate = Date()
     
     var body: some View {
         VStack {
@@ -29,7 +30,7 @@ struct AddScheduleView: View {
                     .padding()
                 Spacer()
                 Button {
-                    let scheduleNameData = ScheduleData(scheduleName: scheduleName, startDate: startTime, endDate: endTime)
+                    let scheduleNameData = ScheduleData(scheduleName: scheduleName, scheduleDate: schedulDate, scheduleStartTime: startTime, scheduleEndTime: endTime)
                     print("add sechedule")
                 } label: {
                     Text("加入")
@@ -39,8 +40,11 @@ struct AddScheduleView: View {
             Form {
                 TextField("標題", text: $scheduleName)
                     .font(.system(size: 20, weight: .semibold, design: .rounded))
-                DatePicker("起始時間", selection: $startTime)
-                DatePicker("結束時間", selection: $endTime)
+                //                https://medium.com/彼得潘的-swift-ios-app-開發問題解答集/ios-14-變成月曆的-date-picker-
+                //                note_datapicker用法
+                DatePicker("日期", selection: $schedulDate, displayedComponents: .date)
+                DatePicker("起始時間", selection: $startTime, displayedComponents: .hourAndMinute)
+                DatePicker("結束時間", selection: $endTime, displayedComponents: .hourAndMinute)
             }
         }
     }
