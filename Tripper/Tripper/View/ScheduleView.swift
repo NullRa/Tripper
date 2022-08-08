@@ -20,27 +20,16 @@ struct ScheduleView: View {
         VStack {
             NavigationView {
                 List {
-                    ForEach(Array(tripData.getScheduleDataFlowByDateDict().keys), id: \.self) {
-//                        _ in
-                        //                        key, value in
-                        //                        Section(header: Text(key)) {
-                        ////                            Text(value)
-                        //                        }
+                    ForEach(tripData.getScheduleInDateList()) { scheduleInDateList in
                         Section {
-                            
+                            ForEach(scheduleInDateList.schedule_in_date_list) { schedule in
+                                ScheduleRow(scheduleInDate: schedule)
+                            }
                         } header: {
-                            Text($0.date)
+                            Text(scheduleInDateList.schedule_date)
                         }
 
                     }
-                    //                    Section {
-                    //                        ForEach(tripData.scheduleDataArray) { scheduleData in
-                    //                            ScheduleRow(scheduleData: scheduleData)
-                    //                        }
-                    //                    } header: {
-                    //                        Text("test")
-                    //                    }
-                    
                 }.navigationTitle(tripData.tripName)
             }
             HStack{
@@ -74,15 +63,15 @@ struct ScheduleView_Previews: PreviewProvider {
 }
 
 struct ScheduleRow: View {
-    var scheduleData: ScheduleData
+    var scheduleInDate: ScheduleInDate
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text(scheduleData.scheduleName)
+                Text(scheduleInDate.schedule_name)
                     .font(.system(.body, design: .rounded))
                     .bold()
                 
-                Text(scheduleData.getStartTimeString() + " ~ " + scheduleData.getEndTimeString())
+                Text(scheduleInDate.schedule_start_time + " ~ " + scheduleInDate.schedule_end_time)
                     .font(.system(.subheadline, design: .rounded))
                     .bold()
                     .foregroundColor(.secondary)
