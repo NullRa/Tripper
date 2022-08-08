@@ -85,7 +85,7 @@ struct ScheduleInDate: Identifiable {
 class TripDataManager: ObservableObject {
     static let shared = TripDataManager()
     let userDefaultsManager = UserDefaultsManager.shared
-    var tripDataArray:[TripData]
+    @Published var tripDataArray:[TripData]
     init(){
         if let tripDatas = userDefaultsManager.loadTripDataArray() {
             tripDataArray = tripDatas
@@ -100,6 +100,9 @@ class TripDataManager: ObservableObject {
     }
     func deleteTrip(index:Int){
         tripDataArray.remove(at: index)
+        userDefaultsManager.saveTripDataArray(tripDataArray: tripDataArray)
+    }
+    func updateTrip(){
         userDefaultsManager.saveTripDataArray(tripDataArray: tripDataArray)
     }
 }

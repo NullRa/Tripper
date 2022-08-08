@@ -9,59 +9,60 @@ import SwiftUI
 
 struct ScheduleView: View {
     @Binding var showingAddScheduleView:Bool
-    
-    var tripData: TripData = TripData(tripName: "Test Trip",
-                                      scheduleDataArray: [
-                                        ScheduleData(scheduleName: "S1", scheduleDate: Date(), scheduleStartTime: Date(), scheduleEndTime: Date()),
-                                        ScheduleData(scheduleName: "S2", scheduleDate: Date(), scheduleStartTime: Date(), scheduleEndTime: Date()),
-                                        ScheduleData(scheduleName: "S3", scheduleDate: Date(), scheduleStartTime: Date(), scheduleEndTime: Date())
-                                      ]
-    )
+    @StateObject var tripDataManager: TripDataManager
+    @Binding var tripListIndex: Int?
     var body: some View {
         VStack {
-            NavigationView {
-                List {
-                    ForEach(tripData.getScheduleInDateList()) { scheduleInDateList in
-                        Section {
-                            ForEach(scheduleInDateList.schedule_in_date_list) { schedule in
-                                ScheduleRow(scheduleInDate: schedule)
+            if tripListIndex != nil {
+                NavigationView {
+                    List {
+                        ForEach(tripDataManager.tripDataArray[tripListIndex!].getScheduleInDateList()) { scheduleInDateList in
+                            Section {
+                                ForEach(scheduleInDateList.schedule_in_date_list) { schedule in
+                                    ScheduleRow(scheduleInDate: schedule)
+                                }
+                            } header: {
+                                Text(scheduleInDateList.schedule_date)
                             }
-                        } header: {
-                            Text(scheduleInDateList.schedule_date)
                         }
-                        
-                    }
-                }.navigationTitle(tripData.tripName)
-            }
-            HStack{
-                Spacer()
-                Button {
-                    showingAddScheduleView = true
-                } label: {
-                    Circle()
-                        .foregroundColor(.green)
-                        .frame(width:80, height: 80)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 5)
-                                .foregroundColor(.white)
-                                .frame(width: 20, height: 20)
-                                .overlay(content: {
-                                    Text("A")
-                                        .foregroundColor(.red)
-                                        .font(.title)
-                                })
-                        )
+                    }.navigationTitle(tripDataManager.tripDataArray[tripListIndex!].tripName)
                 }
+                HStack{
+                    Spacer()
+                    Button {
+                        showingAddScheduleView = true
+                    } label: {
+                        Circle()
+                            .foregroundColor(.green)
+                            .frame(width:80, height: 80)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 5)
+                                    .foregroundColor(.white)
+                                    .frame(width: 20, height: 20)
+                                    .overlay(content: {
+                                        Text("A")
+                                            .foregroundColor(.red)
+                                            .font(.title)
+                                    })
+                            )
+                    }
+                }
+            } else {
+                Spacer()
+                Text("請先新增旅程")
+                Spacer()
             }
+            
+            
         }
     }
 }
 
-struct ScheduleView_Previews: PreviewProvider {
-    static var previews: some View {
-        ScheduleView(showingAddScheduleView: .constant(false))
-    }
-}
+//struct ScheduleView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ScheduleView(showingAddScheduleView: .constant(false), tripDataManager: TripDataManager())
+//    }
+//}
 
 struct ScheduleRow: View {
     var scheduleInDate: ScheduleInDate

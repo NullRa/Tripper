@@ -14,7 +14,7 @@ struct ContentView: View {
     @State var showingAddTripTextFieldAlert = false
     @State var textFieldEnter = ""
     @State var showingAddScheduleView = false
-    @ObservedObject var tripDataManager = TripDataManager.shared
+    @StateObject var tripDataManager = TripDataManager.shared
     
     
     var body: some View {
@@ -34,7 +34,7 @@ struct ContentView: View {
                     PhotoView()
                 case 2:
                     //行程schedule
-                    ScheduleView(showingAddScheduleView: $showingAddScheduleView)
+                    ScheduleView(showingAddScheduleView: $showingAddScheduleView, tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
                 case 3:
                     //留言板
                     PostView()
@@ -56,7 +56,7 @@ struct ContentView: View {
         .fullScreenCover(isPresented: $showingAddScheduleView) {
             self.showingAddScheduleView = false
         } content: {
-            AddScheduleView()
+            AddScheduleView(tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
         }
         .confirmationDialog("test", isPresented: $showingTripList) {
             //note_forEach取得index,element
@@ -96,8 +96,8 @@ struct NavView: View {
     @Binding var showingTripList: Bool
     @Binding var showingAddTripTextFieldAlert: Bool
     @Binding var tripListIndex: Int?
-//    @ObservedObject var contentViewModel: ContentViewModel
-    @ObservedObject var tripDataManager: TripDataManager
+    //    @ObservedObject var contentViewModel: ContentViewModel
+    @StateObject var tripDataManager: TripDataManager
     var body: some View {
         HStack {
             Button {
@@ -114,7 +114,7 @@ struct NavView: View {
                 }
             }
             Spacer()
-//            Text(tripListIndex==nil ? "請先新增旅行" : contentViewModel.tripList[tripListIndex!])
+            //            Text(tripListIndex==nil ? "請先新增旅行" : contentViewModel.tripList[tripListIndex!])
             Text(tripListIndex==nil ? "請先新增旅行" : tripDataManager.tripDataArray[tripListIndex!].tripName)
             Spacer()
             Text("設定")

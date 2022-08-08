@@ -13,6 +13,8 @@ struct AddScheduleView: View {
     @State private var startTime = Date()
     @State private var endTime = Date()
     @State private var schedulDate = Date()
+    @StateObject var tripDataManager: TripDataManager
+    @Binding var tripListIndex: Int?
     
     var body: some View {
         VStack {
@@ -30,7 +32,17 @@ struct AddScheduleView: View {
                     .padding()
                 Spacer()
                 Button {
-                    let scheduleNameData = ScheduleData(scheduleName: scheduleName, scheduleDate: schedulDate, scheduleStartTime: startTime, scheduleEndTime: endTime)
+                    let scheduleData = ScheduleData(scheduleName: scheduleName, scheduleDate: schedulDate, scheduleStartTime: startTime, scheduleEndTime: endTime)
+                    //如果tripListIndex等於nil不會進入到這個頁面可以果斷使用!，邏輯是tripListIndex==nil，ScheduleView不會出現add schedule的按鈕，沒有點擊add schedule的按鈕不會進入此頁面。
+                    //保險起見
+                    if tripListIndex != nil {
+                        tripDataManager.tripDataArray[tripListIndex!].scheduleDataArray.append(scheduleData)
+                        tripDataManager.updateTrip()
+                        dismiss()
+                    } else {
+                        assertionFailure("這邊出包了請確認")
+                    }
+                    
                     print("add sechedule")
                 } label: {
                     Text("加入")
@@ -50,9 +62,9 @@ struct AddScheduleView: View {
     }
 }
 
-struct AddScheduleView_Previews: PreviewProvider {
-    static var previews: some View {
-        //        AddScheduleView(tripName: "test")
-        AddScheduleView()
-    }
-}
+//struct AddScheduleView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        //        AddScheduleView(tripName: "test")
+//        AddScheduleView()
+//    }
+//}
