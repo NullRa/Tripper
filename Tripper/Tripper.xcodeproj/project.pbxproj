@@ -11,6 +11,7 @@
 		1829A56B2893B5DF004522D0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1829A56A2893B5DF004522D0 /* ContentView.swift */; };
 		1829A56D2893B5E0004522D0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1829A56C2893B5E0004522D0 /* Assets.xcassets */; };
 		1829A5702893B5E0004522D0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1829A56F2893B5E0004522D0 /* Preview Assets.xcassets */; };
+		182AD30D28A25D99003D645F /* AddMemberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182AD30C28A25D99003D645F /* AddMemberView.swift */; };
 		1835D7E4289A562E003707E4 /* AddScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1835D7E3289A562E003707E4 /* AddScheduleView.swift */; };
 		1835D7E6289A7BB1003707E4 /* ScheduleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1835D7E5289A7BB1003707E4 /* ScheduleViewModel.swift */; };
 		1835D7E8289A7C41003707E4 /* TripDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1835D7E7289A7C41003707E4 /* TripDataManager.swift */; };
@@ -29,6 +30,7 @@
 		1829A56A2893B5DF004522D0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		1829A56C2893B5E0004522D0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1829A56F2893B5E0004522D0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		182AD30C28A25D99003D645F /* AddMemberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemberView.swift; sourceTree = "<group>"; };
 		1835D7E3289A562E003707E4 /* AddScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddScheduleView.swift; sourceTree = "<group>"; };
 		1835D7E5289A7BB1003707E4 /* ScheduleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewModel.swift; sourceTree = "<group>"; };
 		1835D7E7289A7C41003707E4 /* TripDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripDataManager.swift; sourceTree = "<group>"; };
@@ -94,6 +96,7 @@
 			children = (
 				1829A56A2893B5DF004522D0 /* ContentView.swift */,
 				1856B375289788FF0054BCC7 /* CostView.swift */,
+				182AD30C28A25D99003D645F /* AddMemberView.swift */,
 				1856B37728978A080054BCC7 /* PhotoView.swift */,
 				1856B37928978A800054BCC7 /* ScheduleView.swift */,
 				1835D7E3289A562E003707E4 /* AddScheduleView.swift */,
@@ -195,6 +198,7 @@
 				1856B37A28978A800054BCC7 /* ScheduleView.swift in Sources */,
 				1829A56B2893B5DF004522D0 /* ContentView.swift in Sources */,
 				1829A5692893B5DF004522D0 /* TripperApp.swift in Sources */,
+				182AD30D28A25D99003D645F /* AddMemberView.swift in Sources */,
 				1835D7E4289A562E003707E4 /* AddScheduleView.swift in Sources */,
 				1856B376289788FF0054BCC7 /* CostView.swift in Sources */,
 				1856B37C28978A9D0054BCC7 /* PostView.swift in Sources */,

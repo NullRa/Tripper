@@ -14,6 +14,7 @@ struct ContentView: View {
     @State var showingAddTripTextFieldAlert = false
     @State var textFieldEnter = ""
     @State var showingAddScheduleView = false
+    @State var showingAddMemberView = false
     @StateObject var tripDataManager = TripDataManager.shared
     
     
@@ -28,7 +29,7 @@ struct ContentView: View {
                 switch tabSelection {
                 case 0:
                     //開銷-拆帳
-                    CostView()
+                    CostView(showingAddMemberView: $showingAddMemberView, tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
                 case 1:
                     //相簿
                     PhotoView()
@@ -57,6 +58,11 @@ struct ContentView: View {
             self.showingAddScheduleView = false
         } content: {
             AddScheduleView(tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
+        }
+        .fullScreenCover(isPresented: $showingAddMemberView) {
+            self.showingAddMemberView = false
+        } content: {
+            AddMemberView(tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
         }
         .confirmationDialog("test", isPresented: $showingTripList) {
             //note_forEach取得index,element
