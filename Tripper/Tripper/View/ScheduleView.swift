@@ -25,7 +25,9 @@ struct ScheduleView: View {
                                 Text(scheduleInDateList.schedule_date)
                             }
                         }
-                    }.navigationTitle(tripDataManager.tripDataArray[tripListIndex!].tripName)
+                    }
+                    .navigationTitle(tripDataManager.tripDataArray[tripListIndex!].tripName)
+                    .navigationBarHidden(true)
                 }
                 HStack{
                     Spacer()
