@@ -29,6 +29,9 @@ struct ScheduleView: View {
                     .navigationTitle(tripDataManager.tripDataArray[tripListIndex!].tripName)
                     .navigationBarHidden(true)
                 }
+                .navigationViewStyle(StackNavigationViewStyle())
+                //                .navigationViewStyle(StackNavigationViewStyle())修正log錯誤
+                //            note_https://stackoverflow.com/questions/65316497/swiftui-navigationview-navigationbartitle-layoutconstraints-issue
                 HStack{
                     Spacer()
                     Button {

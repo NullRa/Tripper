@@ -42,14 +42,12 @@ struct AddScheduleView: View {
                     } else {
                         assertionFailure("這邊出包了請確認")
                     }
-                    
-                    print("add sechedule")
                 } label: {
                     Text("加入")
                         .padding()
                 }
             }
-            Form {
+            List {
                 TextField("標題", text: $scheduleName)
                     .font(.system(size: 20, weight: .semibold, design: .rounded))
                 //                https://medium.com/彼得潘的-swift-ios-app-開發問題解答集/ios-14-變成月曆的-date-picker-
@@ -58,6 +56,9 @@ struct AddScheduleView: View {
                 DatePicker("起始時間", selection: $startTime, displayedComponents: .hourAndMinute)
                 DatePicker("結束時間", selection: $endTime, displayedComponents: .hourAndMinute)
             }
+            .listStyle(InsetGroupedListStyle())
+//            https://stackoverflow.com/questions/67515632/swiftui-detected-a-case-where-constraints-ambiguously-suggest-a-height-of-zero
+//            note_若使用form會出現log錯誤
         }
     }
 }
