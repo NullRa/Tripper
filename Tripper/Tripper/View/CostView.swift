@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CostView: View {
     @Binding var showingAddMemberView:Bool
+    @Binding var showingAddCostItemView:Bool
     @StateObject var tripDataManager: TripDataManager
     @Binding var tripListIndex: Int?
     var body: some View {
@@ -71,7 +72,7 @@ struct CostView: View {
                     Spacer()
                     //加入開銷的按鈕//注意這邊要選擇分攤的人有哪些
                     Button {
-                        //                showingAddScheduleView = true
+                        showingAddCostItemView = true
                     } label: {
                         Circle()
                             .foregroundColor(.green)
@@ -94,7 +95,6 @@ struct CostView: View {
                 Text("請先新增旅程")
                 Spacer()
             }
-            
         }
     }
 }

@@ -22,6 +22,7 @@
 		1856B37E28978AAF0054BCC7 /* NoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1856B37D28978AAF0054BCC7 /* NoteView.swift */; };
 		1856B3822897A67A0054BCC7 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1856B3812897A67A0054BCC7 /* UserDefaultsManager.swift */; };
 		1856B385289912490054BCC7 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1856B384289912490054BCC7 /* ContentViewModel.swift */; };
+		18A8C4B828A4FB470041A785 /* AddCostItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A8C4B728A4FB470041A785 /* AddCostItemView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,7 @@
 		1856B37D28978AAF0054BCC7 /* NoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteView.swift; sourceTree = "<group>"; };
 		1856B3812897A67A0054BCC7 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		1856B384289912490054BCC7 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
+		18A8C4B728A4FB470041A785 /* AddCostItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCostItemView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 				1829A56A2893B5DF004522D0 /* ContentView.swift */,
 				1856B375289788FF0054BCC7 /* CostView.swift */,
 				182AD30C28A25D99003D645F /* AddMemberView.swift */,
+				18A8C4B728A4FB470041A785 /* AddCostItemView.swift */,
 				1856B37728978A080054BCC7 /* PhotoView.swift */,
 				1856B37928978A800054BCC7 /* ScheduleView.swift */,
 				1835D7E3289A562E003707E4 /* AddScheduleView.swift */,
@@ -198,6 +201,7 @@
 				1856B37A28978A800054BCC7 /* ScheduleView.swift in Sources */,
 				1829A56B2893B5DF004522D0 /* ContentView.swift in Sources */,
 				1829A5692893B5DF004522D0 /* TripperApp.swift in Sources */,
+				18A8C4B828A4FB470041A785 /* AddCostItemView.swift in Sources */,
 				182AD30D28A25D99003D645F /* AddMemberView.swift in Sources */,
 				1835D7E4289A562E003707E4 /* AddScheduleView.swift in Sources */,
 				1856B376289788FF0054BCC7 /* CostView.swift in Sources */,

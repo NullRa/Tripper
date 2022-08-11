@@ -126,8 +126,9 @@ struct ScheduleInDate: Identifiable {
     var schedule_end_time: String
 }
 
-struct TripMember: Codable {
+struct TripMember: Codable,Identifiable {
     //    fixme_錢多的往前排
+    var id = UUID()
     var memberName: String
     var price: Float
 }
@@ -135,7 +136,8 @@ struct TripMember: Codable {
 struct CostItem: Codable {
     var itemName: String
     var itemPrice: Float
-    var PaidMember: String//墊錢的爸爸
+    var paidMember: String//墊錢的爸爸
+    var sharedMembers: [String]//被照顧得有誰
 }
 
 struct SharedCostResults: Identifiable {

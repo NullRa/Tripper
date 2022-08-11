@@ -15,6 +15,7 @@ struct ContentView: View {
     @State var textFieldEnter = ""
     @State var showingAddScheduleView = false
     @State var showingAddMemberView = false
+    @State var showingAddCostItemView = false
     @StateObject var tripDataManager = TripDataManager.shared
     
     
@@ -29,7 +30,7 @@ struct ContentView: View {
                 switch tabSelection {
                 case 0:
                     //開銷-拆帳
-                    CostView(showingAddMemberView: $showingAddMemberView, tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
+                    CostView(showingAddMemberView: $showingAddMemberView, showingAddCostItemView: $showingAddCostItemView, tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
                 case 1:
                     //相簿
                     PhotoView()
@@ -64,6 +65,12 @@ struct ContentView: View {
         } content: {
             AddMemberView(tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
         }
+        .fullScreenCover(isPresented: $showingAddCostItemView) {
+            self.showingAddCostItemView = false
+        } content: {
+            AddCostItemView(tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
+        }
+        
         .confirmationDialog("test", isPresented: $showingTripList) {
             //note_forEach取得index,element
             //https://stackoverflow.com/questions/57244713/get-index-in-foreach-in-swiftui
