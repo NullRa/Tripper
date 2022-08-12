@@ -68,6 +68,18 @@ struct AddCostItemView: View {
                         return
                     }
                     let costItem = CostItem(itemName: itemName, itemPrice: itemPrice, paidMember: paidMember, sharedMembers: selections)
+                    
+                    for i in 0 ..< tripDataManager.tripDataArray[tripListIndex!].tripMembers.count {
+                        if tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].memberName == paidMember {
+                            tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price = tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price + itemPrice - itemPrice/Float(selections.count+1)
+                        }
+                        for sharedMember in selections {
+                            if tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].memberName == sharedMember {
+                                tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price = tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price - itemPrice/Float(selections.count+1)
+                            }
+                        }
+                    }
+                    
                     //如果tripListIndex等於nil不會進入到這個頁面可以果斷使用!，邏輯是tripListIndex==nil，ScheduleView不會出現add的按鈕，沒有點擊add的按鈕不會進入此頁面。
                     //保險起見
                     if tripListIndex != nil {
