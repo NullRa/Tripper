@@ -23,6 +23,8 @@ struct AddCostItemView: View {
     //    https://stackoverflow.com/questions/56491386/how-to-hide-keyboard-when-using-swiftui
     //    note_關閉keyboard_doneBtn, 這篇第二則
     //    note_關閉keyboard,點擊空白區域關閉 這篇第一則
+    //https://medium.com/彼得潘的-swift-ios-app-開發問題解答集/swiftui-list-row-的-button-點選-af13892c95ca
+    //    note_處理list內的btn無法點擊問題
     private enum Field: Int, CaseIterable {
         case itemName,itemPrice
     }
@@ -39,10 +41,6 @@ struct AddCostItemView: View {
         formatter.numberStyle = .decimal
         return formatter
     }()
-    
-    private func endEditing(){
-        UIApplication.shared.endEditing()
-    }
     
     var body: some View {
         VStack {
@@ -90,19 +88,19 @@ struct AddCostItemView: View {
                     }.font(.system(size: 20, weight: .semibold, design: .rounded))
                     HStack {
                         Text("付錢的爸爸:")
-                        Button {
-                            showSelectPaidMemberList = true
-                        } label: {
-                            Text(paidMember)
-                        }
+                        Text(paidMember)
+                            .foregroundColor(.blue)
+                            .onTapGesture {
+                                showSelectPaidMemberList = true
+                            }
                     }.font(.system(size: 20, weight: .semibold, design: .rounded))
                     HStack {
                         Text("欠債的人們:")
-                        Button {
-                            showSelectSharedMembersList = true
-                        } label: {
-                            Text(sharedMembersString)
-                        }
+                        Text(sharedMembersString)
+                            .foregroundColor(.blue)
+                            .onTapGesture {
+                                showSelectSharedMembersList = true
+                            }
                     }.font(.system(size: 20, weight: .semibold, design: .rounded))
                 }
                 .toolbar(content: {
@@ -115,10 +113,10 @@ struct AddCostItemView: View {
                     }
                 })
                 .listStyle(InsetGroupedListStyle())
+                .onTapGesture {
+                    focusedField = nil
+                }
             }
-        }
-        .onTapGesture {
-            self.endEditing()
         }
         .fullScreenCover(isPresented: $showSelectPaidMemberList) {
             NavigationView {
@@ -210,11 +208,5 @@ struct MultipleSelectionRow: View {
                 }
             }
         }
-    }
-}
-
-extension UIApplication {
-    func endEditing() {
-        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
