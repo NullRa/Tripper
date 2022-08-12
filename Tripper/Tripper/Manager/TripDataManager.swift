@@ -39,8 +39,10 @@ struct TripData: Codable {
         //透過整理members的資料,回傳一個陣列,每個成員該付誰多少錢
         var sharedCostResults = [SharedCostResults]()
         var ownerMembers: [TripMember] = []
-        //        fixme_錢多的往前排序..
-        for tripMember in tripMembers {
+        let tempTripMembers = tripMembers.sorted { data1, data2 in
+            return data1.price > data2.price
+        }
+        for tripMember in tempTripMembers {
             if tripMember.price >= 0 {
                 ownerMembers.append(tripMember)
             } else {
@@ -75,6 +77,11 @@ struct TripData: Codable {
             }
         }
         
+        //        note_錢多的往前排序..陣列排序
+//        https://franksios.medium.com/swift3-高階函數-higher-order-function-a97cf4577a11
+        sharedCostResults.sort { data1, data2 in
+            return data1.price > data2.price
+        }
         return sharedCostResults
     }
 }
@@ -127,7 +134,6 @@ struct ScheduleInDate: Identifiable {
 }
 
 struct TripMember: Codable,Identifiable {
-    //    fixme_錢多的往前排
     var id = UUID()
     var memberName: String
     var price: Float
