@@ -21,7 +21,8 @@ struct AddCostItemView: View {
     @State var selections: [String] = []
     
     //    https://stackoverflow.com/questions/56491386/how-to-hide-keyboard-when-using-swiftui
-    //    note_關閉keyboard_doneBtn
+    //    note_關閉keyboard_doneBtn, 這篇第二則
+    //    note_關閉keyboard,點擊空白區域關閉 這篇第一則
     private enum Field: Int, CaseIterable {
         case itemName,itemPrice
     }
@@ -38,6 +39,10 @@ struct AddCostItemView: View {
         formatter.numberStyle = .decimal
         return formatter
     }()
+    
+    private func endEditing(){
+        UIApplication.shared.endEditing()
+    }
     
     var body: some View {
         VStack {
@@ -111,6 +116,9 @@ struct AddCostItemView: View {
                 })
                 .listStyle(InsetGroupedListStyle())
             }
+        }
+        .onTapGesture {
+            self.endEditing()
         }
         .fullScreenCover(isPresented: $showSelectPaidMemberList) {
             NavigationView {
@@ -202,5 +210,11 @@ struct MultipleSelectionRow: View {
                 }
             }
         }
+    }
+}
+
+extension UIApplication {
+    func endEditing() {
+        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
