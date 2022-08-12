@@ -12,41 +12,83 @@ struct CostView: View {
     @Binding var showingAddCostItemView:Bool
     @StateObject var tripDataManager: TripDataManager
     @Binding var tripListIndex: Int?
+    
+    @State private var segmentedSelect = 0
+    //https://www.hackingwithswift.com/quick-start/swiftui/how-to-create-a-segmented-control-and-read-values-from-it
+    //    note_segmented
     var body: some View {
         VStack {
             if tripListIndex != nil {
-                NavigationView {
-                    List {
-                        ForEach(tripDataManager.tripDataArray[tripListIndex!].getSharedCostResultsList()) { sharedCostResult in
-                            HStack {
-                                VStack(alignment: .leading) {
-                                    Text(sharedCostResult.oweder)
-                                        .font(.system(.body, design: .rounded))
-                                        .bold()
-                                    if sharedCostResult.owner == "noOwner" {
-                                        Text("尚未有消費")
+                VStack {
+                    Picker("CostView Type?",selection: $segmentedSelect){
+                        Text("拆帳表").tag(0)
+                        Text("支出表").tag(1)
+                    }
+                    .pickerStyle(.segmented)
+                }.padding()
+                ZStack {
+                    switch segmentedSelect {
+                    case 0:
+                        NavigationView {
+                            List {
+                                ForEach(tripDataManager.tripDataArray[tripListIndex!].getSharedCostResultsList()) { sharedCostResult in
+                                    HStack {
+                                        VStack(alignment: .leading) {
+                                            Text(sharedCostResult.oweder)
+                                                .font(.system(.body, design: .rounded))
+                                                .bold()
+                                            if sharedCostResult.owner == "noOwner" {
+                                                Text("尚未有消費")
+                                                    .font(.system(.subheadline, design: .rounded))
+                                                    .bold()
+                                                    .foregroundColor(.secondary)
+                                                    .lineLimit(3)
+                                            } else {
+                                                Text("欠" + sharedCostResult.owner + "$:\(sharedCostResult.price)")
+                                                    .font(.system(.subheadline, design: .rounded))
+                                                    .bold()
+                                                    .foregroundColor(.secondary)
+                                                    .lineLimit(3)
+                                            }
+                                        }
+                                        
+                                        Spacer()
+                                        //                .layoutPriority(-100)
+                                    }
+                                }
+                            }
+                            .navigationTitle("t")
+                            .navigationBarHidden(true)
+                        }.navigationViewStyle(StackNavigationViewStyle())
+                    case 1:
+                        NavigationView {
+                            List {
+                                ForEach(tripDataManager.tripDataArray[tripListIndex!].costItems) { costItem in
+                                    //                                    名稱,副標金額,付錢的是誰,欠債的是誰
+                                    VStack(alignment: .leading){
+                                        Text(costItem.itemName)
+                                            .font(.system(.body, design: .rounded))
+                                            .bold()
+                                        Text("$: \(costItem.itemPrice)" + ", " + "付錢的家長: " + costItem.paidMember)
                                             .font(.system(.subheadline, design: .rounded))
                                             .bold()
                                             .foregroundColor(.secondary)
                                             .lineLimit(3)
-                                    } else {
-                                        Text("欠" + sharedCostResult.owner + "$:\(sharedCostResult.price)")
+                                        Text("欠錢的孩子: " + costItem.getSharedMembersString())
                                             .font(.system(.subheadline, design: .rounded))
                                             .bold()
                                             .foregroundColor(.secondary)
                                             .lineLimit(3)
                                     }
                                 }
-                                
-                                Spacer()
-                                //                .layoutPriority(-100)
                             }
-                        }
+                            .navigationTitle("t")
+                            .navigationBarHidden(true)
+                        }.navigationViewStyle(StackNavigationViewStyle())
+                    default:
+                        Text("怎麼了你累了")
                     }
-                    .navigationTitle("t")
-                    .navigationBarHidden(true)
-                }.navigationViewStyle(StackNavigationViewStyle())
-                
+                }
                 
                 HStack{
                     Spacer()

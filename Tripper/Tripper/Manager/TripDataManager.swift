@@ -133,11 +133,25 @@ struct TripMember: Codable,Identifiable {
     var price: Float
 }
 
-struct CostItem: Codable {
+struct CostItem: Codable, Identifiable {
+    var id = UUID()
     var itemName: String
     var itemPrice: Float
     var paidMember: String//墊錢的爸爸
     var sharedMembers: [String]//被照顧得有誰
+    
+    func getSharedMembersString() -> String {
+        var str = ""
+        if sharedMembers.isEmpty {return str}
+        for sharedMember in sharedMembers {
+            if sharedMember == sharedMembers.first {
+                str = sharedMember
+            } else {
+                str = str + ", " + sharedMember
+            }
+        }
+        return str
+    }
 }
 
 struct SharedCostResults: Identifiable {
