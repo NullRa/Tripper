@@ -18,6 +18,8 @@ struct AddCostItemView: View {
     @State var showSelectSharedMembersList = false
     @State var sharedMembersString: String = "欠錢的孩子"
     
+    @State var selections: [String] = []
+    
     let itemPriceFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         //    https://blog.zhheo.com/p/426008c3.html
@@ -74,7 +76,6 @@ struct AddCostItemView: View {
                 HStack {
                     Text("付錢的爸爸:")
                     Button {
-                        //                    paidMember = "謝謝爸爸"
                         showSelectPaidMemberList = true
                     } label: {
                         Text(paidMember)
@@ -83,7 +84,6 @@ struct AddCostItemView: View {
                 HStack {
                     Text("欠債的人們:")
                     Button {
-                        //                    paidMember = "謝謝爸爸"
                         showSelectSharedMembersList = true
                     } label: {
                         Text(sharedMembersString)
@@ -112,7 +112,7 @@ struct AddCostItemView: View {
             }
         }
         .fullScreenCover(isPresented: $showSelectSharedMembersList) {
-//            MultipleSelectionList(tripMembers: tripDataManager.tripDataArray[tripListIndex!].tripMembers, showSelectPaidMemberList: $showSelectSharedMembersList)
+            MultipleSelectionList(tripMembers: tripDataManager.tripDataArray[tripListIndex!].tripMembers, selections: $selections, showSelectPaidMemberList: $showSelectSharedMembersList, sharedMembersString: $sharedMembersString)
         }
     }
 }
@@ -126,9 +126,10 @@ struct AddCostItemView: View {
 //https://stackoverflow.com/questions/57022615/select-multiple-items-in-swiftui-list
 //note_多選單
 struct MultipleSelectionList: View {
-    @Binding var tripMembers: [TripMember]
-    @State var selections: [String] = []
+    var tripMembers: [TripMember]
+    @Binding var selections: [String]
     @Binding var showSelectPaidMemberList: Bool
+    @Binding var sharedMembersString: String
     
     var body: some View {
         NavigationView {
@@ -141,6 +142,17 @@ struct MultipleSelectionList: View {
                             }
                         } else {
                             self.selections.append(member.memberName)
+                        }
+                        sharedMembersString = ""
+                        for selection in selections {
+                            if selections.first == selection {
+                                sharedMembersString = selection
+                            } else {
+                                sharedMembersString = sharedMembersString + ", " + selection
+                            }
+                        }
+                        if selections.isEmpty {
+                            sharedMembersString = "欠錢的孩子"
                         }
                     }
                 }
