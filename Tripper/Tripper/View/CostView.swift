@@ -31,27 +31,41 @@ struct CostView: View {
                     case 0:
                         NavigationView {
                             List {
-                                ForEach(tripDataManager.tripDataArray[tripListIndex!].getSharedCostResultsList()) { sharedCostResult in
+                                let sharedCostResults = tripDataManager.tripDataArray[tripListIndex!].getSharedCostResultsList()
+                                ForEach(tripDataManager.tripDataArray[tripListIndex!].tripMembers) {
+                                    tripMember in
                                     HStack {
                                         VStack(alignment: .leading) {
-                                            Text(sharedCostResult.oweder)
+                                            Text(tripMember.memberName)
                                                 .font(.system(.body, design: .rounded))
                                                 .bold()
-                                            if sharedCostResult.owner == "noOwner" {
-                                                Text("尚未有消費")
+                                            if tripMember.price == 0 {
+                                                Text("收支平衡")
                                                     .font(.system(.subheadline, design: .rounded))
                                                     .bold()
                                                     .foregroundColor(.secondary)
                                                     .lineLimit(3)
+                                            } else if tripMember.price > 0 {
+                                                Text("墊$:\(tripMember.price, specifier: "%.2f") 未收")
+                                                    .font(.system(.subheadline, design: .rounded))
+                                                    .bold()
+                                                    .foregroundColor(.secondary)
+                                                    .lineLimit(3)
+//                                            https://medium.com/彼得潘的-swift-ios-app-開發問題解答集/swiftui-控制浮點數顯示的-string-interpolation-7944a57418dd
+//                                                note_float to string 小數點後控制
                                             } else {
-                                                Text("欠" + sharedCostResult.owner + "$:\(sharedCostResult.price)")
-                                                    .font(.system(.subheadline, design: .rounded))
-                                                    .bold()
-                                                    .foregroundColor(.secondary)
-                                                    .lineLimit(3)
+                                                ForEach(sharedCostResults){
+                                                    sharedCostResult in
+                                                    if sharedCostResult.oweder == tripMember.memberName && sharedCostResult.price > 0{
+                                                        Text("欠\(sharedCostResult.owner) $:\(sharedCostResult.price, specifier: "%.2f")")
+                                                            .font(.system(.subheadline, design: .rounded))
+                                                            .bold()
+                                                            .foregroundColor(.secondary)
+                                                            .lineLimit(3)
+                                                    }
+                                                }
                                             }
                                         }
-                                        
                                         Spacer()
                                         //                .layoutPriority(-100)
                                     }
