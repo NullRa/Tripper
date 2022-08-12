@@ -103,6 +103,8 @@ struct AddCostItemView: View {
                             }
                     }.font(.system(size: 20, weight: .semibold, design: .rounded))
                 }
+                .navigationTitle("t")
+                .navigationBarHidden(true)
                 .toolbar(content: {
                     ToolbarItem(placement: .keyboard) {
                         Button {
