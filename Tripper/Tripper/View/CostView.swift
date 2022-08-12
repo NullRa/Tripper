@@ -111,38 +111,30 @@ struct CostView: View {
                         showingAddMemberView = true
                         //alert
                     } label: {
-                        Circle()
-                            .foregroundColor(.green)
-                            .frame(width:80, height: 80)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 5)
-                                    .foregroundColor(.white)
-                                    .frame(width: 20, height: 20)
-                                    .overlay(content: {
-                                        Text("B")
-                                            .foregroundColor(.red)
-                                            .font(.title)
-                                    })
-                            )
+                        VStack {
+                            Image(systemName: "person.crop.circle.badge.plus")
+                                .resizable()
+                                .foregroundColor(.green)
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 60)
+                            Text("新增小夥伴")
+                                .foregroundColor(.green)
+                        }
                     }
                     Spacer()
                     //加入開銷的按鈕//注意這邊要選擇分攤的人有哪些
                     Button {
                         showingAddCostItemView = true
                     } label: {
-                        Circle()
-                            .foregroundColor(.green)
-                            .frame(width:80, height: 80)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 5)
-                                    .foregroundColor(.white)
-                                    .frame(width: 20, height: 20)
-                                    .overlay(content: {
-                                        Text("C")
-                                            .foregroundColor(.red)
-                                            .font(.title)
-                                    })
-                            )
+                        VStack {
+                            Image(systemName: "cart.badge.plus")
+                                .resizable()
+                                .foregroundColor(.green)
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 60)
+                            Text("新增支出項目")
+                                .foregroundColor(.green)
+                        }
                     }
                     Spacer()
                 }
