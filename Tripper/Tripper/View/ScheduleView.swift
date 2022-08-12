@@ -25,26 +25,27 @@ struct ScheduleView: View {
                                 Text(scheduleInDateList.schedule_date)
                             }
                         }
-                    }.navigationTitle(tripDataManager.tripDataArray[tripListIndex!].tripName)
+                    }
+                    .navigationTitle(tripDataManager.tripDataArray[tripListIndex!].tripName)
+                    .navigationBarHidden(true)
                 }
+                .navigationViewStyle(StackNavigationViewStyle())
+                //                .navigationViewStyle(StackNavigationViewStyle())修正log錯誤
+                //            note_https://stackoverflow.com/questions/65316497/swiftui-navigationview-navigationbartitle-layoutconstraints-issue
                 HStack{
                     Spacer()
                     Button {
                         showingAddScheduleView = true
                     } label: {
-                        Circle()
-                            .foregroundColor(.green)
-                            .frame(width:80, height: 80)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 5)
-                                    .foregroundColor(.white)
-                                    .frame(width: 20, height: 20)
-                                    .overlay(content: {
-                                        Text("A")
-                                            .foregroundColor(.red)
-                                            .font(.title)
-                                    })
-                            )
+                        VStack {
+                            Image(systemName: "plus.circle")
+                                .resizable()
+                                .foregroundColor(.green)
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 60)
+                            Text("新增行程")
+                                .foregroundColor(.green)
+                        }.padding(.trailing)
                     }
                 }
             } else {
