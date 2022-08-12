@@ -19,6 +19,8 @@ struct AddCostItemView: View {
     @State var sharedMembersString: String = "欠錢的孩子"
     
     @State var selections: [String] = []
+    @State private var showAlert = false
+    @State private var alertTitle = ""
     
     //    https://stackoverflow.com/questions/56491386/how-to-hide-keyboard-when-using-swiftui
     //    note_關閉keyboard_doneBtn, 這篇第二則
@@ -58,13 +60,20 @@ struct AddCostItemView: View {
                     .padding()
                 Spacer()
                 Button {
-                    //                    let tripMember = TripMember(memberName:tripMemberName, price: 0)
+                    if itemName == "" || itemPrice == 0 || paidMember == "付錢的爸爸是誰" || selections.isEmpty {
+                        //alert確認資料輸入正確
+                        //                        note_alert
+                        showAlert = true
+                        alertTitle = "確認輸入資料是否正確"
+                        return
+                    }
+                    let costItem = CostItem(itemName: itemName, itemPrice: itemPrice, paidMember: paidMember, sharedMembers: selections)
                     //如果tripListIndex等於nil不會進入到這個頁面可以果斷使用!，邏輯是tripListIndex==nil，ScheduleView不會出現add的按鈕，沒有點擊add的按鈕不會進入此頁面。
                     //保險起見
                     if tripListIndex != nil {
-                        //                        tripDataManager.tripDataArray[tripListIndex!].tripMembers.append(tripMember)
-                        //                        tripDataManager.updateTrip()
-                        //                        dismiss()
+                        tripDataManager.tripDataArray[tripListIndex!].costItems.append(costItem)
+                        tripDataManager.updateTrip()
+                        dismiss()
                     } else {
                         assertionFailure("這邊出包了請確認")
                     }
@@ -142,6 +151,11 @@ struct AddCostItemView: View {
         }
         .fullScreenCover(isPresented: $showSelectSharedMembersList) {
             MultipleSelectionList(tripMembers: tripDataManager.tripDataArray[tripListIndex!].tripMembers, selections: $selections, showSelectPaidMemberList: $showSelectSharedMembersList, sharedMembersString: $sharedMembersString)
+        }
+        .alert(alertTitle, isPresented: $showAlert) {
+            Button("OK"){
+                showAlert = false
+            }
         }
     }
 }
