@@ -20,6 +20,13 @@ struct AddCostItemView: View {
     
     @State var selections: [String] = []
     
+    //    https://stackoverflow.com/questions/56491386/how-to-hide-keyboard-when-using-swiftui
+    //    note_關閉keyboard_doneBtn
+    private enum Field: Int, CaseIterable {
+        case itemName,itemPrice
+    }
+    @FocusState private var focusedField: Field?
+    
     let itemPriceFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         //    https://blog.zhheo.com/p/426008c3.html
@@ -63,33 +70,47 @@ struct AddCostItemView: View {
                         .padding()
                 }
             }
-            List {
-                HStack {
-                    Text("項目:")
-                    TextField("名稱", text: $itemName)
-                }.font(.system(size: 20, weight: .semibold, design: .rounded))
-                HStack {
-                    Text("金額:")
-                    TextField("價格", value: $itemPrice, formatter: itemPriceFormatter)
-                        .keyboardType(.decimalPad)
-                }.font(.system(size: 20, weight: .semibold, design: .rounded))
-                HStack {
-                    Text("付錢的爸爸:")
-                    Button {
-                        showSelectPaidMemberList = true
-                    } label: {
-                        Text(paidMember)
+            NavigationView{
+                List {
+                    HStack {
+                        Text("項目:")
+                        TextField("名稱", text: $itemName)
+                            .focused($focusedField, equals: .itemName)
+                    }.font(.system(size: 20, weight: .semibold, design: .rounded))
+                    HStack {
+                        Text("金額:")
+                        TextField("價格", value: $itemPrice, formatter: itemPriceFormatter)
+                            .focused($focusedField, equals: .itemPrice)
+                            .keyboardType(.decimalPad)
+                    }.font(.system(size: 20, weight: .semibold, design: .rounded))
+                    HStack {
+                        Text("付錢的爸爸:")
+                        Button {
+                            showSelectPaidMemberList = true
+                        } label: {
+                            Text(paidMember)
+                        }
+                    }.font(.system(size: 20, weight: .semibold, design: .rounded))
+                    HStack {
+                        Text("欠債的人們:")
+                        Button {
+                            showSelectSharedMembersList = true
+                        } label: {
+                            Text(sharedMembersString)
+                        }
+                    }.font(.system(size: 20, weight: .semibold, design: .rounded))
+                }
+                .toolbar(content: {
+                    ToolbarItem(placement: .keyboard) {
+                        Button {
+                            focusedField = nil
+                        } label: {
+                            Text("Done")
+                        }
                     }
-                }.font(.system(size: 20, weight: .semibold, design: .rounded))
-                HStack {
-                    Text("欠債的人們:")
-                    Button {
-                        showSelectSharedMembersList = true
-                    } label: {
-                        Text(sharedMembersString)
-                    }
-                }.font(.system(size: 20, weight: .semibold, design: .rounded))
-            }.listStyle(InsetGroupedListStyle())
+                })
+                .listStyle(InsetGroupedListStyle())
+            }
         }
         .fullScreenCover(isPresented: $showSelectPaidMemberList) {
             NavigationView {
