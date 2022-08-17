@@ -20,6 +20,10 @@ struct CostView: View {
     @State var costItemSwipeAction: SwipeBtnAction = .add
     @State var costItemActionEditIndex: Int? = nil
     @State var sharedMembersString: String = "欠錢的孩子"
+    //add & edit member參數
+    @State var tripMemberName:String=""
+    @State var memberListSwipeAction: SwipeBtnAction = .add
+    @State var memberListActionEditIndex: Int? = nil
     
     @State private var segmentedSelect = 0
     //https://www.hackingwithswift.com/quick-start/swiftui/how-to-create-a-segmented-control-and-read-values-from-it
@@ -42,41 +46,35 @@ struct CostView: View {
                                 let sharedCostResults = tripDataManager.tripDataArray[tripListIndex!].getSharedCostResultsList()
                                 ForEach(tripDataManager.tripDataArray[tripListIndex!].tripMembers) {
                                     tripMember in
-                                    HStack {
-                                        VStack(alignment: .leading) {
-                                            Text(tripMember.memberName)
-                                                .font(.system(.body, design: .rounded))
-                                                .bold()
-                                            if tripMember.price == 0 {
-                                                Text("收支平衡")
-                                                    .font(.system(.subheadline, design: .rounded))
-                                                    .bold()
-                                                    .foregroundColor(.secondary)
-                                                    .lineLimit(3)
-                                            } else if tripMember.price > 0 {
-                                                Text("墊$:\(tripMember.price, specifier: "%.2f") 未收")
-                                                    .font(.system(.subheadline, design: .rounded))
-                                                    .bold()
-                                                    .foregroundColor(.secondary)
-                                                    .lineLimit(3)
-                                                //                                            https://medium.com/彼得潘的-swift-ios-app-開發問題解答集/swiftui-控制浮點數顯示的-string-interpolation-7944a57418dd
-                                                //                                                note_float to string 小數點後控制
-                                            } else {
-                                                ForEach(sharedCostResults){
-                                                    sharedCostResult in
-                                                    if sharedCostResult.oweder == tripMember.memberName && sharedCostResult.price > 0{
-                                                        Text("欠\(sharedCostResult.owner) $:\(sharedCostResult.price, specifier: "%.2f")")
-                                                            .font(.system(.subheadline, design: .rounded))
-                                                            .bold()
-                                                            .foregroundColor(.secondary)
-                                                            .lineLimit(3)
-                                                    }
+                                    TripMemberRow(tripMember: tripMember, sharedCostResults: sharedCostResults)
+                                        .swipeActions(edge: .trailing) {
+                                            Button(role: .destructive) {
+                                                if tripMember.price != 0 {
+                                                    assertionFailure("欠錢還想跑")
+                                                    return
+                                                } else {
+                                                    tripDataManager.removeMember(tripIndex: tripListIndex!, memberName: tripMember.memberName)
                                                 }
+                                            } label: {
+                                                Text("Delete")
+                                                    .foregroundColor(.white)
                                             }
+                                            Button(role: .cancel) {
+                                                if let index = tripDataManager.getMemberIndex(tripIndex: tripListIndex!, memberName: tripMember.memberName) {
+                                                    let editMemberData = tripDataManager.tripDataArray[tripListIndex!].tripMembers[index]
+                                                    tripMemberName = editMemberData.memberName
+                                                    memberListSwipeAction = .edit
+                                                    memberListActionEditIndex = index
+                                                } else {
+                                                    assertionFailure("..")
+                                                }
+                                                showingAddMemberView = true
+                                            } label: {
+                                                Text("Edit")
+                                                    .foregroundColor(.white)
+                                            }
+                                            .tint(.gray)
                                         }
-                                        Spacer()
-                                        //                .layoutPriority(-100)
-                                    }
                                 }
                             }
                             .navigationTitle("t")
@@ -152,6 +150,8 @@ struct CostView: View {
                     Spacer()
                     //加入小夥伴的按鈕
                     Button {
+                        memberListSwipeAction = .add
+                        memberListActionEditIndex = nil
                         showingAddMemberView = true
                         //alert
                     } label: {
@@ -197,7 +197,7 @@ struct CostView: View {
         .fullScreenCover(isPresented: $showingAddMemberView) {
             self.showingAddMemberView = false
         } content: {
-            AddMemberView(tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
+            AddMemberView(tripMemberName: $tripMemberName, tripDataManager: tripDataManager, tripListIndex: $tripListIndex,memberListSwipeAction:$memberListSwipeAction, memberListActionEditIndex:$memberListActionEditIndex)
         }
         .fullScreenCover(isPresented: $showingAddCostItemView) {
             self.showingAddCostItemView = false
@@ -240,6 +240,48 @@ struct CostItemRow: View {
                 .bold()
                 .foregroundColor(.secondary)
                 .lineLimit(3)
+        }
+    }
+}
+
+struct TripMemberRow: View {
+    var tripMember:TripMember
+    var sharedCostResults: [SharedCostResults]
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading) {
+                Text(tripMember.memberName)
+                    .font(.system(.body, design: .rounded))
+                    .bold()
+                if tripMember.price == 0 {
+                    Text("收支平衡")
+                        .font(.system(.subheadline, design: .rounded))
+                        .bold()
+                        .foregroundColor(.secondary)
+                        .lineLimit(3)
+                } else if tripMember.price > 0 {
+                    Text("墊$:\(tripMember.price, specifier: "%.2f") 未收")
+                        .font(.system(.subheadline, design: .rounded))
+                        .bold()
+                        .foregroundColor(.secondary)
+                        .lineLimit(3)
+                    //                                            https://medium.com/彼得潘的-swift-ios-app-開發問題解答集/swiftui-控制浮點數顯示的-string-interpolation-7944a57418dd
+                    //                                                note_float to string 小數點後控制
+                } else {
+                    ForEach(sharedCostResults){
+                        sharedCostResult in
+                        if sharedCostResult.oweder == tripMember.memberName && sharedCostResult.price > 0{
+                            Text("欠\(sharedCostResult.owner) $:\(sharedCostResult.price, specifier: "%.2f")")
+                                .font(.system(.subheadline, design: .rounded))
+                                .bold()
+                                .foregroundColor(.secondary)
+                                .lineLimit(3)
+                        }
+                    }
+                }
+            }
+            Spacer()
+            //                .layoutPriority(-100)
         }
     }
 }

@@ -9,9 +9,11 @@ import SwiftUI
 
 struct AddMemberView: View {
     @Environment(\.dismiss) var dismiss
-    @State var tripMemberName:String = ""
+    @Binding var tripMemberName:String
     @StateObject var tripDataManager: TripDataManager
     @Binding var tripListIndex: Int?
+    @Binding var memberListSwipeAction: SwipeBtnAction
+    @Binding var memberListActionEditIndex: Int?
     
     var body: some View {
         VStack {
@@ -33,7 +35,13 @@ struct AddMemberView: View {
                     //如果tripListIndex等於nil不會進入到這個頁面可以果斷使用!，邏輯是tripListIndex==nil，ScheduleView不會出現add的按鈕，沒有點擊add的按鈕不會進入此頁面。
                     //保險起見
                     if tripListIndex != nil {
-                        tripDataManager.tripDataArray[tripListIndex!].tripMembers.append(tripMember)
+                        if memberListSwipeAction == .add {
+                            tripDataManager.tripDataArray[tripListIndex!].tripMembers.append(tripMember)
+                        }
+                        if memberListSwipeAction == .edit, let index = memberListActionEditIndex {
+                            tripDataManager.tripDataArray[tripListIndex!].tripMembers[index].memberName = tripMemberName
+                        }
+                        
                         tripDataManager.updateTrip()
                         dismiss()
                     } else {

@@ -229,5 +229,24 @@ class TripDataManager: ObservableObject {
             assertionFailure("wtf")
         }
     }
+    
+    func getMemberIndex(tripIndex:Int,memberName:String) -> Int?{
+        let tempArray = tripDataArray[tripIndex].tripMembers
+        for i in 0..<tempArray.count {
+            if tempArray[i].memberName == memberName {
+                return i
+            }
+        }
+        return nil
+    }
+    
+    func removeMember(tripIndex:Int,memberName:String){
+        if let index = getMemberIndex(tripIndex: tripIndex, memberName: memberName) {
+            tripDataArray[tripIndex].tripMembers.remove(at: index)
+            updateTrip()
+        } else {
+            assertionFailure("wtf")
+        }
+    }
 }
 
