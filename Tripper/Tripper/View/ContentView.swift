@@ -13,7 +13,6 @@ struct ContentView: View {
     @State private var showingTripList = false
     @State var showingAddTripTextFieldAlert = false
     @State var textFieldEnter = ""
-    @State var showingAddScheduleView = false
     @State var showingAddMemberView = false
     @State var showingAddCostItemView = false
     @StateObject var tripDataManager = TripDataManager.shared
@@ -36,7 +35,7 @@ struct ContentView: View {
                     PhotoView()
                 case 2:
                     //行程schedule
-                    ScheduleView(showingAddScheduleView: $showingAddScheduleView, tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
+                    ScheduleView(tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
                 case 3:
                     //留言板
                     PostView()
@@ -55,11 +54,6 @@ struct ContentView: View {
                 tripListIndex = 0
             }
         })
-        .fullScreenCover(isPresented: $showingAddScheduleView) {
-            self.showingAddScheduleView = false
-        } content: {
-            AddScheduleView(tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
-        }
         .fullScreenCover(isPresented: $showingAddMemberView) {
             self.showingAddMemberView = false
         } content: {
