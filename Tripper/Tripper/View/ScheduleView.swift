@@ -25,6 +25,10 @@ struct ScheduleView: View {
                                 Text(scheduleInDateList.schedule_date)
                             }
                         }
+                        .onDelete { indexSet in
+                            tripDataManager.tripDataArray[tripListIndex!].scheduleDataArray.remove(atOffsets: indexSet)
+                            tripDataManager.updateTrip()
+                        }
                     }
                     .navigationTitle(tripDataManager.tripDataArray[tripListIndex!].tripName)
                     .navigationBarHidden(true)
