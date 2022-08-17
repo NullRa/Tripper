@@ -30,6 +30,7 @@ struct CostView: View {
     //    note_segmented
     
     @State var showingPaidMemberList: Bool = false
+    @State var costListFlowMember: String? = nil
     
     var body: some View {
         VStack {
@@ -90,7 +91,13 @@ struct CostView: View {
                                 Button {
                                     showingPaidMemberList = true
                                 } label: {
-                                    Text("大家的支出")
+                                    if let costListFlowMember = costListFlowMember {
+                                        Text("\(costListFlowMember)的支出")
+                                            .padding(.trailing)
+                                    } else {
+                                        Text("大家的支出")
+                                            .padding(.trailing)
+                                    }
                                 }
                             }
                             
@@ -98,7 +105,7 @@ struct CostView: View {
                                 List {
                                     ForEach(tripDataManager.tripDataArray[tripListIndex!].costItems) { costItem in
                                         //                                    名稱,副標金額,付錢的是誰,欠債的是誰
-                                        CostItemRow(costItem: costItem)
+                                        CostItemRow(costItem: costItem, costListFlowMember: $costListFlowMember)
                                             .swipeActions(edge: .trailing) {
                                                 Button(role: .destructive) {
                                                     //刪除時要一併處理每個成員的金流
@@ -115,7 +122,6 @@ struct CostView: View {
                                                                 }
                                                             }
                                                         }
-                                                        let _ = print(tripDataManager.tripDataArray[tripListIndex!].tripMembers)
                                                     }
                                                     
                                                     tripDataManager.removeCostItem(tripIndex: tripListIndex!, itemName: costItem.itemName)
@@ -155,7 +161,7 @@ struct CostView: View {
                                             Text("Total")
                                                 .font(.system(.body, design: .rounded))
                                                 .bold()
-                                            Text("$: \(tripDataManager.getTotalCost(tripIndex: index), specifier: "%.2f")")
+                                            Text("$: \(tripDataManager.getTotalCost(tripIndex: index, paidMemberName: costListFlowMember), specifier: "%.2f")")
                                                 .font(.system(.subheadline, design: .rounded))
                                                 .bold()
                                                 .foregroundColor(.secondary)
@@ -243,19 +249,30 @@ struct CostView: View {
             )
         }
         .confirmationDialog("test", isPresented: $showingPaidMemberList) {
-            ForEach(Array(tripDataManager.tripDataArray.enumerated()), id: \.offset) { index, tripData in
-                Button {
-                    //fixme切換旅程資料
-                    tripListIndex = index
-                } label: {
-                    Text(tripData.tripName)
+//            ForEach(Array(tripDataManager.tripDataArray.enumerated()), id: \.offset) { index, tripData in
+//                Button {
+//                    //fixme切換旅程資料
+//                    tripListIndex = index
+//                } label: {
+//                    Text(tripData.tripName)
+//                }
+//            }
+            if let tripListIndex = tripListIndex {
+                ForEach(tripDataManager.tripDataArray[tripListIndex].tripMembers) {
+                    tripMember in
+                    Button {
+                        costListFlowMember = tripMember.memberName
+                    } label: {
+                        Text(tripMember.memberName)
+                    }
                 }
-            }
-            
-            Button {
-                showingAddTripTextFieldAlert = true
-            } label: {
-                Text("新增旅程")
+                
+                Button {
+                    costListFlowMember = nil
+                    showingPaidMemberList = false
+                } label: {
+                    Text("全部")
+                }
             }
         }
     }
@@ -269,21 +286,24 @@ struct CostView: View {
 
 struct CostItemRow: View {
     var costItem: CostItem
+    @Binding var costListFlowMember: String?
     var body: some View {
-        VStack(alignment: .leading){
-            Text(costItem.itemName)
-                .font(.system(.body, design: .rounded))
-                .bold()
-            Text("$: \(costItem.itemPrice)" + ", " + "付錢的家長: " + costItem.paidMember)
-                .font(.system(.subheadline, design: .rounded))
-                .bold()
-                .foregroundColor(.secondary)
-                .lineLimit(3)
-            Text("欠錢的孩子: " + costItem.getSharedMembersString())
-                .font(.system(.subheadline, design: .rounded))
-                .bold()
-                .foregroundColor(.secondary)
-                .lineLimit(3)
+        if costListFlowMember == nil || costItem.paidMember == costListFlowMember {
+            VStack(alignment: .leading){
+                Text(costItem.itemName)
+                    .font(.system(.body, design: .rounded))
+                    .bold()
+                Text("$: \(costItem.itemPrice)" + ", " + "付錢的家長: " + costItem.paidMember)
+                    .font(.system(.subheadline, design: .rounded))
+                    .bold()
+                    .foregroundColor(.secondary)
+                    .lineLimit(3)
+                Text("欠錢的孩子: " + costItem.getSharedMembersString())
+                    .font(.system(.subheadline, design: .rounded))
+                    .bold()
+                    .foregroundColor(.secondary)
+                    .lineLimit(3)
+            }
         }
     }
 }

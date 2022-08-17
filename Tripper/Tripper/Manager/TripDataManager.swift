@@ -249,11 +249,17 @@ class TripDataManager: ObservableObject {
         }
     }
     
-    func getTotalCost(tripIndex:Int) -> Float {
+    func getTotalCost(tripIndex:Int,paidMemberName:String?) -> Float {
         let costArray = tripDataArray[tripIndex].costItems
         var total: Float = 0.0
         for cost in costArray {
-            total = total + cost.itemPrice
+            if let paidMemberName = paidMemberName {
+                if cost.paidMember == paidMemberName {
+                    total = total + cost.itemPrice
+                }
+            } else {
+                total = total + cost.itemPrice
+            }
         }
         return total
     }
