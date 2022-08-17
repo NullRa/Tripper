@@ -20,15 +20,29 @@ struct ScheduleView: View {
                             Section {
                                 ForEach(scheduleInDateList.schedule_in_date_list) { schedule in
                                     ScheduleRow(scheduleInDate: schedule)
+                                    //note_swipe_delete滑動刪除功能
+                                        .swipeActions(edge: .trailing) {
+                                            Button(role: .destructive) {
+                                                tripDataManager.removeSchedule(tripIndex: tripListIndex!, scheduleName: schedule.schedule_name)
+                                            } label: {
+                                                Text("Delete")
+                                                    .foregroundColor(.white)
+                                            }
+                                            Button(role: .cancel) {
+                                                print("Edit")
+                                            } label: {
+                                                Text("Edit")
+                                                    .foregroundColor(.white)
+                                            }
+                                            .tint(.gray)
+                                        }
                                 }
+                                
                             } header: {
                                 Text(scheduleInDateList.schedule_date)
                             }
                         }
-                        .onDelete { indexSet in
-                            tripDataManager.tripDataArray[tripListIndex!].scheduleDataArray.remove(atOffsets: indexSet)
-                            tripDataManager.updateTrip()
-                        }
+                        
                     }
                     .navigationTitle(tripDataManager.tripDataArray[tripListIndex!].tripName)
                     .navigationBarHidden(true)

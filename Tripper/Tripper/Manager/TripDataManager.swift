@@ -190,5 +190,14 @@ class TripDataManager: ObservableObject {
     func updateTrip(){
         userDefaultsManager.saveTripDataArray(tripDataArray: tripDataArray)
     }
+    func removeSchedule(tripIndex:Int,scheduleName:String){
+        let tempArray = tripDataArray[tripIndex].scheduleDataArray
+        for i in 0..<tempArray.count {
+            if tempArray[i].scheduleName == scheduleName {
+                tripDataArray[tripIndex].scheduleDataArray.remove(at: i)
+                updateTrip()
+            }
+        }
+    }
 }
 
