@@ -15,7 +15,7 @@ struct AddScheduleView: View {
     @Binding var startTime:Date
     @Binding var endTime:Date
     @Binding var schedulDate:Date
-    @Binding var scheduleAction: ScheduleAction
+    @Binding var scheduleAction: SwipeBtnAction
     @Binding var editIndex: Int?
     //    note_初始化state參數
     //    https://stackoverflow.com/questions/56691630/swiftui-state-var-initialization-issue

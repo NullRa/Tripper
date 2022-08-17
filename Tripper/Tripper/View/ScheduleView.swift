@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-enum ScheduleAction: Int{
+enum SwipeBtnAction: Int{
     case add,edit
 }
 struct ScheduleView: View {
@@ -18,7 +18,7 @@ struct ScheduleView: View {
     @State var startTime:Date = Date()
     @State var endTime:Date = Date()
     @State var schedulDate:Date = Date()
-    @State var scheduleAction: ScheduleAction = .add
+    @State var scheduleAction: SwipeBtnAction = .add
     @State var scheduleActionEditIndex: Int? = nil
     
     var body: some View {

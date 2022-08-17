@@ -16,6 +16,8 @@ struct AddCostItemView: View {
     @Binding var itemPrice:Float
     @Binding var itemPaidMember:String
     @Binding var itemSharedMembers: [String]
+    @Binding var costItemSwipeAction: SwipeBtnAction
+    @Binding var costItemActionEditIndex: Int?
     
     @State var sharedMembersString: String = "欠錢的孩子"
     @State var showSelectPaidMemberList = false
@@ -84,7 +86,14 @@ struct AddCostItemView: View {
                     //如果tripListIndex等於nil不會進入到這個頁面可以果斷使用!，邏輯是tripListIndex==nil，ScheduleView不會出現add的按鈕，沒有點擊add的按鈕不會進入此頁面。
                     //保險起見
                     if tripListIndex != nil {
-                        tripDataManager.tripDataArray[tripListIndex!].costItems.append(costItem)
+                        //add新增
+                        if costItemSwipeAction == .add {
+                            tripDataManager.tripDataArray[tripListIndex!].costItems.append(costItem)
+                        }
+                        //edit用index判斷要更新誰
+                        if costItemSwipeAction == .edit, let index = costItemActionEditIndex {
+                            tripDataManager.tripDataArray[tripListIndex!].costItems[index] = costItem
+                        }
                         tripDataManager.updateTrip()
                         dismiss()
                     } else {

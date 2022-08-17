@@ -17,6 +17,8 @@ struct CostView: View {
     @State var itemPrice:Float = 0.0
     @State var itemPaidMember:String = "付錢的爸爸是誰"
     @State var itemSharedMembers: [String] = []
+    @State var costItemSwipeAction: SwipeBtnAction = .add
+    @State var costItemActionEditIndex: Int? = nil
     
     @State private var segmentedSelect = 0
     //https://www.hackingwithswift.com/quick-start/swiftui/how-to-create-a-segmented-control-and-read-values-from-it
@@ -84,21 +86,33 @@ struct CostView: View {
                             List {
                                 ForEach(tripDataManager.tripDataArray[tripListIndex!].costItems) { costItem in
                                     //                                    名稱,副標金額,付錢的是誰,欠債的是誰
-                                    VStack(alignment: .leading){
-                                        Text(costItem.itemName)
-                                            .font(.system(.body, design: .rounded))
-                                            .bold()
-                                        Text("$: \(costItem.itemPrice)" + ", " + "付錢的家長: " + costItem.paidMember)
-                                            .font(.system(.subheadline, design: .rounded))
-                                            .bold()
-                                            .foregroundColor(.secondary)
-                                            .lineLimit(3)
-                                        Text("欠錢的孩子: " + costItem.getSharedMembersString())
-                                            .font(.system(.subheadline, design: .rounded))
-                                            .bold()
-                                            .foregroundColor(.secondary)
-                                            .lineLimit(3)
-                                    }
+                                    CostItemRow(costItem: costItem)
+                                        .swipeActions(edge: .trailing) {
+                                            Button(role: .destructive) {
+                                                tripDataManager.removeCostItem(tripIndex: tripListIndex!, itemName: costItem.itemName)
+                                            } label: {
+                                                Text("Delete")
+                                                    .foregroundColor(.white)
+                                            }
+                                            Button(role: .cancel) {
+                                                if let index = tripDataManager.getCostItemIndex(tripIndex: tripListIndex!, itemName: costItem.itemName)
+                                                {
+                                                    itemName = costItem.itemName
+                                                    itemPrice = costItem.itemPrice
+                                                    itemPaidMember = costItem.paidMember
+                                                    itemSharedMembers = costItem.sharedMembers
+                                                    costItemSwipeAction = .edit
+                                                    costItemActionEditIndex = index
+                                                } else {
+                                                    assertionFailure("編輯行程出包了.")
+                                                }
+                                                showingAddCostItemView = true
+                                            } label: {
+                                                Text("Edit")
+                                                    .foregroundColor(.white)
+                                            }
+                                            .tint(.gray)
+                                        }
                                 }
                             }
                             .navigationTitle("t")
@@ -163,7 +177,9 @@ struct CostView: View {
                 itemName: $itemName,
                 itemPrice: $itemPrice,
                 itemPaidMember: $itemPaidMember,
-                itemSharedMembers: $itemSharedMembers
+                itemSharedMembers: $itemSharedMembers,
+                costItemSwipeAction: $costItemSwipeAction,
+                costItemActionEditIndex: $costItemActionEditIndex
             )
         }
     }
@@ -174,3 +190,24 @@ struct CostView: View {
 //        CostView()
 //    }
 //}
+
+struct CostItemRow: View {
+    var costItem: CostItem
+    var body: some View {
+        VStack(alignment: .leading){
+            Text(costItem.itemName)
+                .font(.system(.body, design: .rounded))
+                .bold()
+            Text("$: \(costItem.itemPrice)" + ", " + "付錢的家長: " + costItem.paidMember)
+                .font(.system(.subheadline, design: .rounded))
+                .bold()
+                .foregroundColor(.secondary)
+                .lineLimit(3)
+            Text("欠錢的孩子: " + costItem.getSharedMembersString())
+                .font(.system(.subheadline, design: .rounded))
+                .bold()
+                .foregroundColor(.secondary)
+                .lineLimit(3)
+        }
+    }
+}

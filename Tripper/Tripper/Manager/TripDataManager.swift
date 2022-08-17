@@ -198,7 +198,6 @@ class TripDataManager: ObservableObject {
         } else {
             assertionFailure("wtf")
         }
-        
     }
     
     func getScheduleIndex(tripIndex:Int,scheduleName:String) -> Int?{
@@ -209,6 +208,26 @@ class TripDataManager: ObservableObject {
             }
         }
         return nil
+    }
+    
+    func getCostItemIndex(tripIndex:Int,itemName:String) -> Int?{
+        let tempArray = tripDataArray[tripIndex].costItems
+        for i in 0..<tempArray.count {
+            if tempArray[i].itemName == itemName {
+                return i
+            }
+        }
+        return nil
+    }
+    
+    func removeCostItem(tripIndex:Int,itemName:String){
+        let index = getCostItemIndex(tripIndex: tripIndex, itemName: itemName)
+        if let index = index {
+            tripDataArray[tripIndex].costItems.remove(at: index)
+            updateTrip()
+        } else {
+            assertionFailure("wtf")
+        }
     }
 }
 
