@@ -28,6 +28,9 @@ struct CostView: View {
     @State private var segmentedSelect = 0
     //https://www.hackingwithswift.com/quick-start/swiftui/how-to-create-a-segmented-control-and-read-values-from-it
     //    note_segmented
+    
+    @State var showingPaidMemberList: Bool = false
+    
     var body: some View {
         VStack {
             if tripListIndex != nil {
@@ -81,78 +84,90 @@ struct CostView: View {
                             .navigationBarHidden(true)
                         }.navigationViewStyle(StackNavigationViewStyle())
                     case 1:
-                        NavigationView {
-                            List {
-                                ForEach(tripDataManager.tripDataArray[tripListIndex!].costItems) { costItem in
-                                    //                                    名稱,副標金額,付錢的是誰,欠債的是誰
-                                    CostItemRow(costItem: costItem)
-                                        .swipeActions(edge: .trailing) {
-                                            Button(role: .destructive) {
-                                                //刪除時要一併處理每個成員的金流
-                                                if let index = tripDataManager.getCostItemIndex(tripIndex: tripListIndex!, itemName: costItem.itemName) {
-                                                    let _ = print(tripDataManager.tripDataArray[tripListIndex!].tripMembers)
-                                                    let changeCostItem = tripDataManager.tripDataArray[tripListIndex!].costItems[index]
-                                                    for i in 0 ..< tripDataManager.tripDataArray[tripListIndex!].tripMembers.count {
-                                                        if tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].memberName == changeCostItem.paidMember {
-                                                            tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price = tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price - (changeCostItem.itemPrice - changeCostItem.itemPrice/Float(changeCostItem.sharedMembers.count+1))
-                                                        }
-                                                        for sharedMember in changeCostItem.sharedMembers {
-                                                            if tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].memberName == sharedMember {
-                                                                tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price = tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price + changeCostItem.itemPrice/Float(changeCostItem.sharedMembers.count+1)
-                                                            }
-                                                        }
-                                                    }
-                                                    let _ = print(tripDataManager.tripDataArray[tripListIndex!].tripMembers)
-                                                }
-                                                
-                                                tripDataManager.removeCostItem(tripIndex: tripListIndex!, itemName: costItem.itemName)
-                                            } label: {
-                                                Text("Delete")
-                                                    .foregroundColor(.white)
-                                            }
-                                            Button(role: .cancel) {
-                                                if let index = tripDataManager.getCostItemIndex(tripIndex: tripListIndex!, itemName: costItem.itemName)
-                                                {
-                                                    itemName = costItem.itemName
-                                                    itemPrice = costItem.itemPrice
-                                                    itemPaidMember = costItem.paidMember
-                                                    itemSharedMembers = costItem.sharedMembers
-                                                    costItemSwipeAction = .edit
-                                                    costItemActionEditIndex = index
-                                                    for selection in itemSharedMembers {
-                                                        if itemSharedMembers.first == selection {
-                                                            sharedMembersString = selection
-                                                        } else {
-                                                            sharedMembersString = sharedMembersString + ", " + selection
-                                                        }
-                                                    }
-                                                } else {
-                                                    assertionFailure("編輯行程出包了.")
-                                                }
-                                                showingAddCostItemView = true
-                                            } label: {
-                                                Text("Edit")
-                                                    .foregroundColor(.white)
-                                            }
-                                            .tint(.gray)
-                                        }
-                                }
-                                if let index = tripListIndex {
-                                    VStack(alignment: .leading){
-                                        Text("Total")
-                                            .font(.system(.body, design: .rounded))
-                                            .bold()
-                                        Text("$: \(tripDataManager.getTotalCost(tripIndex: index), specifier: "%.2f")")
-                                            .font(.system(.subheadline, design: .rounded))
-                                            .bold()
-                                            .foregroundColor(.secondary)
-                                            .lineLimit(3)
-                                    }
+                        VStack {
+                            HStack {
+                                Spacer()
+                                Button {
+                                    showingPaidMemberList = true
+                                } label: {
+                                    Text("大家的支出")
                                 }
                             }
-                            .navigationTitle("t")
-                            .navigationBarHidden(true)
-                        }.navigationViewStyle(StackNavigationViewStyle())
+                            
+                            NavigationView {
+                                List {
+                                    ForEach(tripDataManager.tripDataArray[tripListIndex!].costItems) { costItem in
+                                        //                                    名稱,副標金額,付錢的是誰,欠債的是誰
+                                        CostItemRow(costItem: costItem)
+                                            .swipeActions(edge: .trailing) {
+                                                Button(role: .destructive) {
+                                                    //刪除時要一併處理每個成員的金流
+                                                    if let index = tripDataManager.getCostItemIndex(tripIndex: tripListIndex!, itemName: costItem.itemName) {
+                                                        let _ = print(tripDataManager.tripDataArray[tripListIndex!].tripMembers)
+                                                        let changeCostItem = tripDataManager.tripDataArray[tripListIndex!].costItems[index]
+                                                        for i in 0 ..< tripDataManager.tripDataArray[tripListIndex!].tripMembers.count {
+                                                            if tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].memberName == changeCostItem.paidMember {
+                                                                tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price = tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price - (changeCostItem.itemPrice - changeCostItem.itemPrice/Float(changeCostItem.sharedMembers.count+1))
+                                                            }
+                                                            for sharedMember in changeCostItem.sharedMembers {
+                                                                if tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].memberName == sharedMember {
+                                                                    tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price = tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price + changeCostItem.itemPrice/Float(changeCostItem.sharedMembers.count+1)
+                                                                }
+                                                            }
+                                                        }
+                                                        let _ = print(tripDataManager.tripDataArray[tripListIndex!].tripMembers)
+                                                    }
+                                                    
+                                                    tripDataManager.removeCostItem(tripIndex: tripListIndex!, itemName: costItem.itemName)
+                                                } label: {
+                                                    Text("Delete")
+                                                        .foregroundColor(.white)
+                                                }
+                                                Button(role: .cancel) {
+                                                    if let index = tripDataManager.getCostItemIndex(tripIndex: tripListIndex!, itemName: costItem.itemName)
+                                                    {
+                                                        itemName = costItem.itemName
+                                                        itemPrice = costItem.itemPrice
+                                                        itemPaidMember = costItem.paidMember
+                                                        itemSharedMembers = costItem.sharedMembers
+                                                        costItemSwipeAction = .edit
+                                                        costItemActionEditIndex = index
+                                                        for selection in itemSharedMembers {
+                                                            if itemSharedMembers.first == selection {
+                                                                sharedMembersString = selection
+                                                            } else {
+                                                                sharedMembersString = sharedMembersString + ", " + selection
+                                                            }
+                                                        }
+                                                    } else {
+                                                        assertionFailure("編輯行程出包了.")
+                                                    }
+                                                    showingAddCostItemView = true
+                                                } label: {
+                                                    Text("Edit")
+                                                        .foregroundColor(.white)
+                                                }
+                                                .tint(.gray)
+                                            }
+                                    }
+                                    if let index = tripListIndex {
+                                        VStack(alignment: .leading){
+                                            Text("Total")
+                                                .font(.system(.body, design: .rounded))
+                                                .bold()
+                                            Text("$: \(tripDataManager.getTotalCost(tripIndex: index), specifier: "%.2f")")
+                                                .font(.system(.subheadline, design: .rounded))
+                                                .bold()
+                                                .foregroundColor(.secondary)
+                                                .lineLimit(3)
+                                        }
+                                    }
+                                }
+                                .navigationTitle("t")
+                                .navigationBarHidden(true)
+                            }.navigationViewStyle(StackNavigationViewStyle())
+                        }
+                        
                     default:
                         Text("怎麼了你累了")
                     }
@@ -225,6 +240,22 @@ struct CostView: View {
                 costItemActionEditIndex: $costItemActionEditIndex,
                 sharedMembersString: $sharedMembersString
             )
+        }
+        .confirmationDialog("test", isPresented: $showingPaidMemberList) {
+            ForEach(Array(tripDataManager.tripDataArray.enumerated()), id: \.offset) { index, tripData in
+                Button {
+                    //fixme切換旅程資料
+                    tripListIndex = index
+                } label: {
+                    Text(tripData.tripName)
+                }
+            }
+            
+            Button {
+                showingAddTripTextFieldAlert = true
+            } label: {
+                Text("新增旅程")
+            }
         }
     }
 }
