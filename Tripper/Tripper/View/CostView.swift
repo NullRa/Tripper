@@ -200,6 +200,7 @@ struct CostView: View {
                         itemPaidMember = "付錢的爸爸是誰"
                         itemSharedMembers = []
                         costItemSwipeAction = .add
+                        sharedMembersString = "欠錢的孩子"
                         costItemActionEditIndex = nil
                         showingAddCostItemView = true
                     } label: {
