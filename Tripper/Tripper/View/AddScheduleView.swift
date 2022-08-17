@@ -57,8 +57,8 @@ struct AddScheduleView: View {
                 DatePicker("結束時間", selection: $endTime, displayedComponents: .hourAndMinute)
             }
             .listStyle(InsetGroupedListStyle())
-//            https://stackoverflow.com/questions/67515632/swiftui-detected-a-case-where-constraints-ambiguously-suggest-a-height-of-zero
-//            note_若使用form會出現log錯誤
+            //            https://stackoverflow.com/questions/67515632/swiftui-detected-a-case-where-constraints-ambiguously-suggest-a-height-of-zero
+            //            note_若使用form會出現log錯誤
         }
     }
 }

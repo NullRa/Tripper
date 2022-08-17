@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct ScheduleView: View {
-    @Binding var showingAddScheduleView:Bool
+    @State var showingAddScheduleView = false
     @StateObject var tripDataManager: TripDataManager
     @Binding var tripListIndex: Int?
+    
     var body: some View {
         VStack {
             if tripListIndex != nil {
@@ -73,6 +74,11 @@ struct ScheduleView: View {
             }
             
             
+        }
+        .fullScreenCover(isPresented: $showingAddScheduleView) {
+            showingAddScheduleView = false
+        } content: {
+            AddScheduleView(tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
         }
     }
 }
