@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CostView: View {
     @State var showingAddMemberView = false
-    @Binding var showingAddCostItemView:Bool
+    @State var showingAddCostItemView = false
     @StateObject var tripDataManager: TripDataManager
     @Binding var tripListIndex: Int?
     
@@ -148,6 +148,11 @@ struct CostView: View {
             self.showingAddMemberView = false
         } content: {
             AddMemberView(tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
+        }
+        .fullScreenCover(isPresented: $showingAddCostItemView) {
+            self.showingAddCostItemView = false
+        } content: {
+            AddCostItemView(tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
         }
     }
 }
