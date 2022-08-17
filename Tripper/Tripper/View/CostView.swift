@@ -12,6 +12,11 @@ struct CostView: View {
     @State var showingAddCostItemView = false
     @StateObject var tripDataManager: TripDataManager
     @Binding var tripListIndex: Int?
+    //add & edit costItemView 參數
+    @State var itemName:String = ""
+    @State var itemPrice:Float = 0.0
+    @State var itemPaidMember:String = "付錢的爸爸是誰"
+    @State var itemSharedMembers: [String] = []
     
     @State private var segmentedSelect = 0
     //https://www.hackingwithswift.com/quick-start/swiftui/how-to-create-a-segmented-control-and-read-values-from-it
@@ -152,7 +157,14 @@ struct CostView: View {
         .fullScreenCover(isPresented: $showingAddCostItemView) {
             self.showingAddCostItemView = false
         } content: {
-            AddCostItemView(tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
+            AddCostItemView(
+                tripDataManager: tripDataManager,
+                tripListIndex: $tripListIndex,
+                itemName: $itemName,
+                itemPrice: $itemPrice,
+                itemPaidMember: $itemPaidMember,
+                itemSharedMembers: $itemSharedMembers
+            )
         }
     }
 }

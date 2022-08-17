@@ -9,23 +9,24 @@ import SwiftUI
 
 struct AddCostItemView: View {
     @Environment(\.dismiss) var dismiss
-    @State var itemName:String = ""
-    @State var paidMember:String = "付錢的爸爸是誰"
-    @State var itemPrice:Float = 0.0
     @StateObject var tripDataManager: TripDataManager
     @Binding var tripListIndex: Int?
+    
+    @Binding var itemName:String
+    @Binding var itemPrice:Float
+    @Binding var itemPaidMember:String
+    @Binding var itemSharedMembers: [String]
+    
+    @State var sharedMembersString: String = "欠錢的孩子"
     @State var showSelectPaidMemberList = false
     @State var showSelectSharedMembersList = false
-    @State var sharedMembersString: String = "欠錢的孩子"
-    
-    @State var selections: [String] = []
     @State private var showAlert = false
     @State private var alertTitle = ""
     
     //    https://stackoverflow.com/questions/56491386/how-to-hide-keyboard-when-using-swiftui
     //    note_關閉keyboard_doneBtn, 這篇第二則
     //    note_關閉keyboard,點擊空白區域關閉 這篇第一則
-    //https://medium.com/彼得潘的-swift-ios-app-開發問題解答集/swiftui-list-row-的-button-點選-af13892c95ca
+    //    https://medium.com/彼得潘的-swift-ios-app-開發問題解答集/swiftui-list-row-的-button-點選-af13892c95ca
     //    note_處理list內的btn無法點擊問題
     private enum Field: Int, CaseIterable {
         case itemName,itemPrice
@@ -60,22 +61,22 @@ struct AddCostItemView: View {
                     .padding()
                 Spacer()
                 Button {
-                    if itemName == "" || itemPrice == 0 || paidMember == "付錢的爸爸是誰" || selections.isEmpty {
+                    if itemName == "" || itemPrice == 0 || itemPaidMember == "付錢的爸爸是誰" || itemSharedMembers.isEmpty {
                         //alert確認資料輸入正確
                         //                        note_alert
                         showAlert = true
                         alertTitle = "確認輸入資料是否正確"
                         return
                     }
-                    let costItem = CostItem(itemName: itemName, itemPrice: itemPrice, paidMember: paidMember, sharedMembers: selections)
+                    let costItem = CostItem(itemName: itemName, itemPrice: itemPrice, paidMember: itemPaidMember, sharedMembers: itemSharedMembers)
                     
                     for i in 0 ..< tripDataManager.tripDataArray[tripListIndex!].tripMembers.count {
-                        if tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].memberName == paidMember {
-                            tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price = tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price + itemPrice - itemPrice/Float(selections.count+1)
+                        if tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].memberName == itemPaidMember {
+                            tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price = tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price + itemPrice - itemPrice/Float(itemSharedMembers.count+1)
                         }
-                        for sharedMember in selections {
+                        for sharedMember in itemSharedMembers {
                             if tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].memberName == sharedMember {
-                                tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price = tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price - itemPrice/Float(selections.count+1)
+                                tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price = tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price - itemPrice/Float(itemSharedMembers.count+1)
                             }
                         }
                     }
@@ -109,7 +110,7 @@ struct AddCostItemView: View {
                     }.font(.system(size: 20, weight: .semibold, design: .rounded))
                     HStack {
                         Text("付錢的爸爸:")
-                        Text(paidMember)
+                        Text(itemPaidMember)
                             .foregroundColor(.blue)
                             .onTapGesture {
                                 showSelectPaidMemberList = true
@@ -146,7 +147,7 @@ struct AddCostItemView: View {
                 List {
                     ForEach(tripDataManager.tripDataArray[tripListIndex!].tripMembers) { member in
                         Button {
-                            paidMember = member.memberName
+                            itemPaidMember = member.memberName
                             showSelectPaidMemberList = false
                         } label: {
                             Text(member.memberName)
@@ -162,7 +163,7 @@ struct AddCostItemView: View {
             }
         }
         .fullScreenCover(isPresented: $showSelectSharedMembersList) {
-            MultipleSelectionList(tripMembers: tripDataManager.tripDataArray[tripListIndex!].tripMembers, selections: $selections, showSelectPaidMemberList: $showSelectSharedMembersList, sharedMembersString: $sharedMembersString)
+            MultipleSelectionList(tripMembers: tripDataManager.tripDataArray[tripListIndex!].tripMembers, itemSharedMembers: $itemSharedMembers, showSelectPaidMemberList: $showSelectSharedMembersList, sharedMembersString: $sharedMembersString)
         }
         .alert(alertTitle, isPresented: $showAlert) {
             Button("OK"){
@@ -182,7 +183,7 @@ struct AddCostItemView: View {
 //note_多選單
 struct MultipleSelectionList: View {
     var tripMembers: [TripMember]
-    @Binding var selections: [String]
+    @Binding var itemSharedMembers: [String]
     @Binding var showSelectPaidMemberList: Bool
     @Binding var sharedMembersString: String
     
@@ -190,23 +191,23 @@ struct MultipleSelectionList: View {
         NavigationView {
             List {
                 ForEach(tripMembers) { member in
-                    MultipleSelectionRow(title: member.memberName, isSelected: selections.contains(member.memberName)) {
-                        if self.selections.contains(member.memberName) {
-                            self.selections.removeAll { select in
+                    MultipleSelectionRow(title: member.memberName, isSelected: itemSharedMembers.contains(member.memberName)) {
+                        if self.itemSharedMembers.contains(member.memberName) {
+                            self.itemSharedMembers.removeAll { select in
                                 select == member.memberName
                             }
                         } else {
-                            self.selections.append(member.memberName)
+                            self.itemSharedMembers.append(member.memberName)
                         }
                         sharedMembersString = ""
-                        for selection in selections {
-                            if selections.first == selection {
+                        for selection in itemSharedMembers {
+                            if itemSharedMembers.first == selection {
                                 sharedMembersString = selection
                             } else {
                                 sharedMembersString = sharedMembersString + ", " + selection
                             }
                         }
-                        if selections.isEmpty {
+                        if itemSharedMembers.isEmpty {
                             sharedMembersString = "欠錢的孩子"
                         }
                     }
