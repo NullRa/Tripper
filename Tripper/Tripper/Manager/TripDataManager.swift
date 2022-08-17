@@ -248,5 +248,14 @@ class TripDataManager: ObservableObject {
             assertionFailure("wtf")
         }
     }
+    
+    func getTotalCost(tripIndex:Int) -> Float {
+        let costArray = tripDataArray[tripIndex].costItems
+        var total: Float = 0.0
+        for cost in costArray {
+            total = total + cost.itemPrice
+        }
+        return total
+    }
 }
 

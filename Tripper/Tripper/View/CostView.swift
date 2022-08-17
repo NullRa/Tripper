@@ -137,6 +137,18 @@ struct CostView: View {
                                             .tint(.gray)
                                         }
                                 }
+                                if let index = tripListIndex {
+                                    VStack(alignment: .leading){
+                                        Text("Total")
+                                            .font(.system(.body, design: .rounded))
+                                            .bold()
+                                        Text("$: \(tripDataManager.getTotalCost(tripIndex: index), specifier: "%.2f")")
+                                            .font(.system(.subheadline, design: .rounded))
+                                            .bold()
+                                            .foregroundColor(.secondary)
+                                            .lineLimit(3)
+                                    }
+                                }
                             }
                             .navigationTitle("t")
                             .navigationBarHidden(true)
