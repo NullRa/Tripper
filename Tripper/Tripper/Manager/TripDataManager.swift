@@ -78,7 +78,7 @@ struct TripData: Codable {
         }
         
         //        note_錢多的往前排序..陣列排序
-//        https://franksios.medium.com/swift3-高階函數-higher-order-function-a97cf4577a11
+        //        https://franksios.medium.com/swift3-高階函數-higher-order-function-a97cf4577a11
         sharedCostResults.sort { data1, data2 in
             return data1.price > data2.price
         }
@@ -191,13 +191,24 @@ class TripDataManager: ObservableObject {
         userDefaultsManager.saveTripDataArray(tripDataArray: tripDataArray)
     }
     func removeSchedule(tripIndex:Int,scheduleName:String){
+        let index = getScheduleIndex(tripIndex: tripIndex, scheduleName: scheduleName)
+        if let index = index {
+            tripDataArray[tripIndex].scheduleDataArray.remove(at: index)
+            updateTrip()
+        } else {
+            assertionFailure("wtf")
+        }
+        
+    }
+    
+    func getScheduleIndex(tripIndex:Int,scheduleName:String) -> Int?{
         let tempArray = tripDataArray[tripIndex].scheduleDataArray
         for i in 0..<tempArray.count {
             if tempArray[i].scheduleName == scheduleName {
-                tripDataArray[tripIndex].scheduleDataArray.remove(at: i)
-                updateTrip()
+                return i
             }
         }
+        return nil
     }
 }
 

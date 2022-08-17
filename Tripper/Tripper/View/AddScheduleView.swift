@@ -9,12 +9,19 @@ import SwiftUI
 
 struct AddScheduleView: View {
     @Environment(\.dismiss) var dismiss
-    @State var scheduleName:String = ""
-    @State private var startTime = Date()
-    @State private var endTime = Date()
-    @State private var schedulDate = Date()
     @StateObject var tripDataManager: TripDataManager
     @Binding var tripListIndex: Int?
+    @Binding var scheduleName:String
+    @Binding var startTime:Date
+    @Binding var endTime:Date
+    @Binding var schedulDate:Date
+    @Binding var scheduleAction: ScheduleAction
+    @Binding var editIndex: Int?
+    //    note_初始化state參數
+    //    https://stackoverflow.com/questions/56691630/swiftui-state-var-initialization-issue
+    //    note_初始化binding參數
+    //    https://stackoverflow.com/questions/56973959/swiftui-how-to-implement-a-custom-init-with-binding-variables
+    //    結論..init onappear都會延遲 所以直接用Binding來做
     
     var body: some View {
         VStack {
@@ -36,7 +43,14 @@ struct AddScheduleView: View {
                     //如果tripListIndex等於nil不會進入到這個頁面可以果斷使用!，邏輯是tripListIndex==nil，ScheduleView不會出現add schedule的按鈕，沒有點擊add schedule的按鈕不會進入此頁面。
                     //保險起見
                     if tripListIndex != nil {
-                        tripDataManager.tripDataArray[tripListIndex!].scheduleDataArray.append(scheduleData)
+                        //如果是add判斷是否同名
+                        if scheduleAction == .add {
+                            tripDataManager.tripDataArray[tripListIndex!].scheduleDataArray.append(scheduleData)
+                        }
+                        //如果是edit用index判斷要更新哪一比
+                        if scheduleAction == .edit, let index = editIndex {
+                            tripDataManager.tripDataArray[tripListIndex!].scheduleDataArray[index] = scheduleData
+                        }
                         tripDataManager.updateTrip()
                         dismiss()
                     } else {

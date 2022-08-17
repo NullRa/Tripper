@@ -6,11 +6,20 @@
 //
 
 import SwiftUI
-
+enum ScheduleAction: Int{
+    case add,edit
+}
 struct ScheduleView: View {
+    
     @State var showingAddScheduleView = false
     @StateObject var tripDataManager: TripDataManager
     @Binding var tripListIndex: Int?
+    @State var scheduleName: String = ""
+    @State var startTime:Date = Date()
+    @State var endTime:Date = Date()
+    @State var schedulDate:Date = Date()
+    @State var scheduleAction: ScheduleAction = .add
+    @State var scheduleActionEditIndex: Int? = nil
     
     var body: some View {
         VStack {
@@ -30,7 +39,19 @@ struct ScheduleView: View {
                                                     .foregroundColor(.white)
                                             }
                                             Button(role: .cancel) {
-                                                print("Edit")
+                                                if let index = tripDataManager.getScheduleIndex(tripIndex: tripListIndex!, scheduleName: schedule.schedule_name)
+                                                {
+                                                    let editScheduleData = tripDataManager.tripDataArray[tripListIndex!].scheduleDataArray[index]
+                                                    scheduleName = editScheduleData.scheduleName
+                                                    startTime = editScheduleData.scheduleStartTime
+                                                    endTime = editScheduleData.scheduleEndTime
+                                                    schedulDate = editScheduleData.scheduleDate
+                                                    scheduleAction = .edit
+                                                    scheduleActionEditIndex = index
+                                                } else {
+                                                    assertionFailure("編輯行程出包了.")
+                                                }
+                                                showingAddScheduleView = true
                                             } label: {
                                                 Text("Edit")
                                                     .foregroundColor(.white)
@@ -54,6 +75,12 @@ struct ScheduleView: View {
                 HStack{
                     Spacer()
                     Button {
+                        scheduleName = ""
+                        startTime = Date()
+                        endTime = Date()
+                        schedulDate = Date()
+                        scheduleAction = .add
+                        scheduleActionEditIndex = nil
                         showingAddScheduleView = true
                     } label: {
                         VStack {
@@ -78,7 +105,16 @@ struct ScheduleView: View {
         .fullScreenCover(isPresented: $showingAddScheduleView) {
             showingAddScheduleView = false
         } content: {
-            AddScheduleView(tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
+            AddScheduleView(
+                tripDataManager: tripDataManager,
+                tripListIndex: $tripListIndex,
+                scheduleName: $scheduleName,
+                startTime: $startTime,
+                endTime: $endTime,
+                schedulDate: $schedulDate,
+                scheduleAction: $scheduleAction,
+                editIndex: $scheduleActionEditIndex
+            )
         }
     }
 }
