@@ -19,6 +19,7 @@ struct CostView: View {
     @State var itemSharedMembers: [String] = []
     @State var costItemSwipeAction: SwipeBtnAction = .add
     @State var costItemActionEditIndex: Int? = nil
+    @State var sharedMembersString: String = "欠錢的孩子"
     
     @State private var segmentedSelect = 0
     //https://www.hackingwithswift.com/quick-start/swiftui/how-to-create-a-segmented-control-and-read-values-from-it
@@ -89,6 +90,23 @@ struct CostView: View {
                                     CostItemRow(costItem: costItem)
                                         .swipeActions(edge: .trailing) {
                                             Button(role: .destructive) {
+                                                //刪除時要一併處理每個成員的金流
+                                                if let index = tripDataManager.getCostItemIndex(tripIndex: tripListIndex!, itemName: costItem.itemName) {
+                                                    let _ = print(tripDataManager.tripDataArray[tripListIndex!].tripMembers)
+                                                    let changeCostItem = tripDataManager.tripDataArray[tripListIndex!].costItems[index]
+                                                    for i in 0 ..< tripDataManager.tripDataArray[tripListIndex!].tripMembers.count {
+                                                        if tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].memberName == changeCostItem.paidMember {
+                                                            tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price = tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price - (changeCostItem.itemPrice - changeCostItem.itemPrice/Float(changeCostItem.sharedMembers.count+1))
+                                                        }
+                                                        for sharedMember in changeCostItem.sharedMembers {
+                                                            if tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].memberName == sharedMember {
+                                                                tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price = tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price + changeCostItem.itemPrice/Float(changeCostItem.sharedMembers.count+1)
+                                                            }
+                                                        }
+                                                    }
+                                                    let _ = print(tripDataManager.tripDataArray[tripListIndex!].tripMembers)
+                                                }
+                                                
                                                 tripDataManager.removeCostItem(tripIndex: tripListIndex!, itemName: costItem.itemName)
                                             } label: {
                                                 Text("Delete")
@@ -103,6 +121,13 @@ struct CostView: View {
                                                     itemSharedMembers = costItem.sharedMembers
                                                     costItemSwipeAction = .edit
                                                     costItemActionEditIndex = index
+                                                    for selection in itemSharedMembers {
+                                                        if itemSharedMembers.first == selection {
+                                                            sharedMembersString = selection
+                                                        } else {
+                                                            sharedMembersString = sharedMembersString + ", " + selection
+                                                        }
+                                                    }
                                                 } else {
                                                     assertionFailure("編輯行程出包了.")
                                                 }
@@ -143,6 +168,12 @@ struct CostView: View {
                     Spacer()
                     //加入開銷的按鈕//注意這邊要選擇分攤的人有哪些
                     Button {
+                        itemName = ""
+                        itemPrice = 0.0
+                        itemPaidMember = "付錢的爸爸是誰"
+                        itemSharedMembers = []
+                        costItemSwipeAction = .add
+                        costItemActionEditIndex = nil
                         showingAddCostItemView = true
                     } label: {
                         VStack {
@@ -179,7 +210,8 @@ struct CostView: View {
                 itemPaidMember: $itemPaidMember,
                 itemSharedMembers: $itemSharedMembers,
                 costItemSwipeAction: $costItemSwipeAction,
-                costItemActionEditIndex: $costItemActionEditIndex
+                costItemActionEditIndex: $costItemActionEditIndex,
+                sharedMembersString: $sharedMembersString
             )
         }
     }

@@ -18,8 +18,7 @@ struct AddCostItemView: View {
     @Binding var itemSharedMembers: [String]
     @Binding var costItemSwipeAction: SwipeBtnAction
     @Binding var costItemActionEditIndex: Int?
-    
-    @State var sharedMembersString: String = "欠錢的孩子"
+    @Binding var sharedMembersString: String
     @State var showSelectPaidMemberList = false
     @State var showSelectSharedMembersList = false
     @State private var showAlert = false
@@ -70,8 +69,22 @@ struct AddCostItemView: View {
                         alertTitle = "確認輸入資料是否正確"
                         return
                     }
+                    
                     let costItem = CostItem(itemName: itemName, itemPrice: itemPrice, paidMember: itemPaidMember, sharedMembers: itemSharedMembers)
                     
+                    if costItemSwipeAction == .edit, let index = costItemActionEditIndex {
+                        let changeCostItem = tripDataManager.tripDataArray[tripListIndex!].costItems[index]
+                        for i in 0 ..< tripDataManager.tripDataArray[tripListIndex!].tripMembers.count {
+                            if tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].memberName == changeCostItem.paidMember {
+                                tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price = tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price - (changeCostItem.itemPrice - changeCostItem.itemPrice/Float(changeCostItem.sharedMembers.count+1))
+                            }
+                            for sharedMember in changeCostItem.sharedMembers {
+                                if tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].memberName == sharedMember {
+                                    tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price = tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price + changeCostItem.itemPrice/Float(changeCostItem.sharedMembers.count+1)
+                                }
+                            }
+                        }
+                    }
                     for i in 0 ..< tripDataManager.tripDataArray[tripListIndex!].tripMembers.count {
                         if tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].memberName == itemPaidMember {
                             tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price = tripDataManager.tripDataArray[tripListIndex!].tripMembers[i].price + itemPrice - itemPrice/Float(itemSharedMembers.count+1)
@@ -82,6 +95,7 @@ struct AddCostItemView: View {
                             }
                         }
                     }
+                    
                     
                     //如果tripListIndex等於nil不會進入到這個頁面可以果斷使用!，邏輯是tripListIndex==nil，ScheduleView不會出現add的按鈕，沒有點擊add的按鈕不會進入此頁面。
                     //保險起見
