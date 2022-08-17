@@ -13,7 +13,6 @@ struct ContentView: View {
     @State private var showingTripList = false
     @State var showingAddTripTextFieldAlert = false
     @State var textFieldEnter = ""
-    @State var showingAddMemberView = false
     @State var showingAddCostItemView = false
     @StateObject var tripDataManager = TripDataManager.shared
     
@@ -29,7 +28,7 @@ struct ContentView: View {
                 switch tabSelection {
                 case 0:
                     //開銷-拆帳
-                    CostView(showingAddMemberView: $showingAddMemberView, showingAddCostItemView: $showingAddCostItemView, tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
+                    CostView(showingAddCostItemView: $showingAddCostItemView, tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
                 case 1:
                     //相簿
                     PhotoView()
@@ -54,11 +53,6 @@ struct ContentView: View {
                 tripListIndex = 0
             }
         })
-        .fullScreenCover(isPresented: $showingAddMemberView) {
-            self.showingAddMemberView = false
-        } content: {
-            AddMemberView(tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
-        }
         .fullScreenCover(isPresented: $showingAddCostItemView) {
             self.showingAddCostItemView = false
         } content: {

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CostView: View {
-    @Binding var showingAddMemberView:Bool
+    @State var showingAddMemberView = false
     @Binding var showingAddCostItemView:Bool
     @StateObject var tripDataManager: TripDataManager
     @Binding var tripListIndex: Int?
@@ -51,8 +51,8 @@ struct CostView: View {
                                                     .bold()
                                                     .foregroundColor(.secondary)
                                                     .lineLimit(3)
-//                                            https://medium.com/彼得潘的-swift-ios-app-開發問題解答集/swiftui-控制浮點數顯示的-string-interpolation-7944a57418dd
-//                                                note_float to string 小數點後控制
+                                                //                                            https://medium.com/彼得潘的-swift-ios-app-開發問題解答集/swiftui-控制浮點數顯示的-string-interpolation-7944a57418dd
+                                                //                                                note_float to string 小數點後控制
                                             } else {
                                                 ForEach(sharedCostResults){
                                                     sharedCostResult in
@@ -143,6 +143,11 @@ struct CostView: View {
                 Text("請先新增旅程")
                 Spacer()
             }
+        }
+        .fullScreenCover(isPresented: $showingAddMemberView) {
+            self.showingAddMemberView = false
+        } content: {
+            AddMemberView(tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
         }
     }
 }
