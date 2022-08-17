@@ -78,7 +78,7 @@ struct TripData: Codable {
         }
         
         //        note_錢多的往前排序..陣列排序
-//        https://franksios.medium.com/swift3-高階函數-higher-order-function-a97cf4577a11
+        //        https://franksios.medium.com/swift3-高階函數-higher-order-function-a97cf4577a11
         sharedCostResults.sort { data1, data2 in
             return data1.price > data2.price
         }
@@ -189,6 +189,64 @@ class TripDataManager: ObservableObject {
     }
     func updateTrip(){
         userDefaultsManager.saveTripDataArray(tripDataArray: tripDataArray)
+    }
+    func removeSchedule(tripIndex:Int,scheduleName:String){
+        let index = getScheduleIndex(tripIndex: tripIndex, scheduleName: scheduleName)
+        if let index = index {
+            tripDataArray[tripIndex].scheduleDataArray.remove(at: index)
+            updateTrip()
+        } else {
+            assertionFailure("wtf")
+        }
+    }
+    
+    func getScheduleIndex(tripIndex:Int,scheduleName:String) -> Int?{
+        let tempArray = tripDataArray[tripIndex].scheduleDataArray
+        for i in 0..<tempArray.count {
+            if tempArray[i].scheduleName == scheduleName {
+                return i
+            }
+        }
+        return nil
+    }
+    
+    func getCostItemIndex(tripIndex:Int,itemName:String) -> Int?{
+        let tempArray = tripDataArray[tripIndex].costItems
+        for i in 0..<tempArray.count {
+            if tempArray[i].itemName == itemName {
+                return i
+            }
+        }
+        return nil
+    }
+    
+    func removeCostItem(tripIndex:Int,itemName:String){
+        let index = getCostItemIndex(tripIndex: tripIndex, itemName: itemName)
+        if let index = index {
+            tripDataArray[tripIndex].costItems.remove(at: index)
+            updateTrip()
+        } else {
+            assertionFailure("wtf")
+        }
+    }
+    
+    func getMemberIndex(tripIndex:Int,memberName:String) -> Int?{
+        let tempArray = tripDataArray[tripIndex].tripMembers
+        for i in 0..<tempArray.count {
+            if tempArray[i].memberName == memberName {
+                return i
+            }
+        }
+        return nil
+    }
+    
+    func removeMember(tripIndex:Int,memberName:String){
+        if let index = getMemberIndex(tripIndex: tripIndex, memberName: memberName) {
+            tripDataArray[tripIndex].tripMembers.remove(at: index)
+            updateTrip()
+        } else {
+            assertionFailure("wtf")
+        }
     }
 }
 
