@@ -190,6 +190,16 @@ class TripDataManager: ObservableObject {
     func updateTrip(){
         userDefaultsManager.saveTripDataArray(tripDataArray: tripDataArray)
     }
+    
+    func addSchedule(tripIndex:Int,scheduleData:ScheduleData) {
+        tripDataArray[tripIndex].scheduleDataArray.append(scheduleData)
+        updateTrip()
+    }
+    func editSchedule(tripIndex:Int,scheduleIndex:Int,scheduleData:ScheduleData) {
+        tripDataArray[tripIndex].scheduleDataArray[scheduleIndex] = scheduleData
+        updateTrip()
+    }
+    
     func removeSchedule(tripIndex:Int,scheduleName:String){
         let index = getScheduleIndex(tripIndex: tripIndex, scheduleName: scheduleName)
         if let index = index {
