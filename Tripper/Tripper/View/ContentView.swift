@@ -29,18 +29,10 @@ struct ContentView: View {
                     //開銷-拆帳
                     CostView(tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
                 case 1:
-                    //相簿
-                    PhotoView()
-                case 2:
                     //行程schedule
                     ScheduleView(tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
-                case 3:
-                    //留言板
-                    PostView()
-                case 4:
-                    //個人記事本
-                    NoteView()
                 default:
+                    //1相簿PhotoView(),3留言板PostView(),4個人記事本NoteView()
                     Text("default")
                 }
             }
