@@ -262,23 +262,3 @@ struct TextFieldAlert: ViewModifier {
         }
     }
 }
-
-extension View {
-    public func textFieldAlert(
-        isPresented: Binding<Bool>,
-        title:String,
-        text:Binding<String>,
-        placeholder:String="",
-        action:@escaping (String) -> Void
-    ) -> some View {
-        self.modifier(TextFieldAlert(isPresented: isPresented, title: title, text: text, placeholder: placeholder, action: action))
-    }
-}
-extension String: Identifiable {
-    //note_讓String可以進array
-    //https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
-    public typealias ID = Int
-    public var id: Int {
-        return hash
-    }
-}

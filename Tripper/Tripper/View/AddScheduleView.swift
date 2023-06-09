@@ -45,11 +45,11 @@ struct AddScheduleView: View {
                     if tripListIndex != nil {
                         //如果是add判斷是否同名
                         if scheduleAction == .add {
-                            tripDataManager.tripDataArray[tripListIndex!].scheduleDataArray.append(scheduleData)
+                            tripDataManager.addSchedule(tripIndex: tripListIndex!, scheduleData: scheduleData)
                         }
                         //如果是edit用index判斷要更新哪一比
                         if scheduleAction == .edit, let index = editIndex {
-                            tripDataManager.tripDataArray[tripListIndex!].scheduleDataArray[index] = scheduleData
+                            tripDataManager.editSchedule(tripIndex: tripListIndex!, scheduleIndex:index, scheduleData: scheduleData)
                         }
                         tripDataManager.updateTrip()
                         dismiss()

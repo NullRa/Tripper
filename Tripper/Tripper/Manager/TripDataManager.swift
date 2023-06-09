@@ -190,6 +190,16 @@ class TripDataManager: ObservableObject {
     func updateTrip(){
         userDefaultsManager.saveTripDataArray(tripDataArray: tripDataArray)
     }
+    
+    func addSchedule(tripIndex:Int,scheduleData:ScheduleData) {
+        tripDataArray[tripIndex].scheduleDataArray.append(scheduleData)
+        updateTrip()
+    }
+    func editSchedule(tripIndex:Int,scheduleIndex:Int,scheduleData:ScheduleData) {
+        tripDataArray[tripIndex].scheduleDataArray[scheduleIndex] = scheduleData
+        updateTrip()
+    }
+    
     func removeSchedule(tripIndex:Int,scheduleName:String){
         let index = getScheduleIndex(tripIndex: tripIndex, scheduleName: scheduleName)
         if let index = index {
@@ -247,6 +257,21 @@ class TripDataManager: ObservableObject {
         } else {
             assertionFailure("wtf")
         }
+    }
+    
+    func getTotalCost(tripIndex:Int,paidMemberName:String?) -> Float {
+        let costArray = tripDataArray[tripIndex].costItems
+        var total: Float = 0.0
+        for cost in costArray {
+            if let paidMemberName = paidMemberName {
+                if cost.paidMember == paidMemberName {
+                    total = total + cost.itemPrice
+                }
+            } else {
+                total = total + cost.itemPrice
+            }
+        }
+        return total
     }
 }
 
