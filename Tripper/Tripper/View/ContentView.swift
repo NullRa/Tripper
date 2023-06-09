@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var tabSelection = 2
+    @State var tabSelection = 1
     @State var tripListIndex: Int?
     @State private var showingTripList = false
     @State var showingAddTripTextFieldAlert = false
@@ -29,18 +29,10 @@ struct ContentView: View {
                     //開銷-拆帳
                     CostView(tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
                 case 1:
-                    //相簿
-                    PhotoView()
-                case 2:
                     //行程schedule
                     ScheduleView(tripDataManager: tripDataManager, tripListIndex: $tripListIndex)
-                case 3:
-                    //留言板
-                    PostView()
-                case 4:
-                    //個人記事本
-                    NoteView()
                 default:
+                    //1相簿PhotoView(),3留言板PostView(),4個人記事本NoteView()
                     Text("default")
                 }
             }
@@ -101,17 +93,14 @@ struct NavView: View {
                     showingTripList = true
                 }
             } label: {
-                if tripDataManager.tripDataArray.isEmpty {
+                if tripDataManager.tripDataArray.isEmpty || tripListIndex==nil {
                     Text("新增旅程")
                 } else {
-                    Text("切換旅程")
+                    Text(tripDataManager.tripDataArray[tripListIndex!].tripName)
                 }
             }
-            Spacer()
-            //            Text(tripListIndex==nil ? "請先新增旅行" : contentViewModel.tripList[tripListIndex!])
-            Text(tripListIndex==nil ? "請先新增旅行" : tripDataManager.tripDataArray[tripListIndex!].tripName)
-            Spacer()
-            Text("設定")
+            // MARK: - todo 設定按鈕沒有功能先隱藏
+            //            Text("設定")
         }.padding()
     }
 }
@@ -120,6 +109,8 @@ struct TabView: View {
     @Binding var index: Int
     var body: some View {
         HStack {
+            // MARK: todo 未實作按鈕先隱藏
+            Spacer()
             Button {
                 index = 0
             } label: {
@@ -129,26 +120,9 @@ struct TabView: View {
             Button {
                 index = 1
             } label: {
-                TabItemView(tabItemType: .tab2, selected: self.index == 1)
+                TabItemView(tabItemType: .tab3, selected: self.index == 1)
             }
             Spacer()
-            Button {
-                index = 2
-            } label: {
-                TabItemView(tabItemType: .tab3, selected: self.index == 2)
-            }
-            Spacer()
-            Button {
-                index = 3
-            } label: {
-                TabItemView(tabItemType: .tab4, selected: self.index == 3)
-            }
-            Spacer()
-            Button {
-                index = 4
-            } label: {
-                TabItemView(tabItemType: .tab5, selected: self.index == 4)
-            }
         }
         .padding()
         .background(Color(red: 188/255, green: 216/255, blue: 193/255))

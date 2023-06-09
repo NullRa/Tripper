@@ -222,6 +222,7 @@ struct CostView: View {
                     }
                     Spacer()
                 }
+                .padding(.bottom,5)
             } else {
                 Spacer()
                 Text("請先新增旅程")
