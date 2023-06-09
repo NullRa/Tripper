@@ -111,7 +111,8 @@ struct NavView: View {
             //            Text(tripListIndex==nil ? "請先新增旅行" : contentViewModel.tripList[tripListIndex!])
             Text(tripListIndex==nil ? "請先新增旅行" : tripDataManager.tripDataArray[tripListIndex!].tripName)
             Spacer()
-            Text("設定")
+            // MARK: - todo 設定按鈕沒有功能先隱藏
+            //            Text("設定")
         }.padding()
     }
 }
