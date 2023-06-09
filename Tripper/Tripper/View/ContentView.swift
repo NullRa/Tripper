@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var tabSelection = 2
+    @State var tabSelection = 1
     @State var tripListIndex: Int?
     @State private var showingTripList = false
     @State var showingAddTripTextFieldAlert = false
@@ -120,6 +120,8 @@ struct TabView: View {
     @Binding var index: Int
     var body: some View {
         HStack {
+            // MARK: todo 未實作按鈕先隱藏
+            Spacer()
             Button {
                 index = 0
             } label: {
@@ -129,26 +131,9 @@ struct TabView: View {
             Button {
                 index = 1
             } label: {
-                TabItemView(tabItemType: .tab2, selected: self.index == 1)
+                TabItemView(tabItemType: .tab3, selected: self.index == 1)
             }
             Spacer()
-            Button {
-                index = 2
-            } label: {
-                TabItemView(tabItemType: .tab3, selected: self.index == 2)
-            }
-            Spacer()
-            Button {
-                index = 3
-            } label: {
-                TabItemView(tabItemType: .tab4, selected: self.index == 3)
-            }
-            Spacer()
-            Button {
-                index = 4
-            } label: {
-                TabItemView(tabItemType: .tab5, selected: self.index == 4)
-            }
         }
         .padding()
         .background(Color(red: 188/255, green: 216/255, blue: 193/255))
