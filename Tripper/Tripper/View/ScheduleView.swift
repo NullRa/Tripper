@@ -6,11 +6,21 @@
 //
 
 import SwiftUI
-
+enum SwipeBtnAction: Int{
+    case add,edit
+}
 struct ScheduleView: View {
-    @Binding var showingAddScheduleView:Bool
+    
+    @State var showingAddScheduleView = false
     @StateObject var tripDataManager: TripDataManager
     @Binding var tripListIndex: Int?
+    @State var scheduleName: String = ""
+    @State var startTime:Date = Date()
+    @State var endTime:Date = Date()
+    @State var schedulDate:Date = Date()
+    @State var scheduleAction: SwipeBtnAction = .add
+    @State var scheduleActionEditIndex: Int? = nil
+    
     var body: some View {
         VStack {
             if tripListIndex != nil {
@@ -20,31 +30,68 @@ struct ScheduleView: View {
                             Section {
                                 ForEach(scheduleInDateList.schedule_in_date_list) { schedule in
                                     ScheduleRow(scheduleInDate: schedule)
+                                    //note_swipe_delete滑動刪除功能
+                                        .swipeActions(edge: .trailing) {
+                                            Button(role: .destructive) {
+                                                tripDataManager.removeSchedule(tripIndex: tripListIndex!, scheduleName: schedule.schedule_name)
+                                            } label: {
+                                                Text("Delete")
+                                                    .foregroundColor(.white)
+                                            }
+                                            Button(role: .cancel) {
+                                                if let index = tripDataManager.getScheduleIndex(tripIndex: tripListIndex!, scheduleName: schedule.schedule_name)
+                                                {
+                                                    let editScheduleData = tripDataManager.tripDataArray[tripListIndex!].scheduleDataArray[index]
+                                                    scheduleName = editScheduleData.scheduleName
+                                                    startTime = editScheduleData.scheduleStartTime
+                                                    endTime = editScheduleData.scheduleEndTime
+                                                    schedulDate = editScheduleData.scheduleDate
+                                                    scheduleAction = .edit
+                                                    scheduleActionEditIndex = index
+                                                } else {
+                                                    assertionFailure("編輯行程出包了.")
+                                                }
+                                                showingAddScheduleView = true
+                                            } label: {
+                                                Text("Edit")
+                                                    .foregroundColor(.white)
+                                            }
+                                            .tint(.gray)
+                                        }
                                 }
+                                
                             } header: {
                                 Text(scheduleInDateList.schedule_date)
                             }
                         }
-                    }.navigationTitle(tripDataManager.tripDataArray[tripListIndex!].tripName)
+                        
+                    }
+                    .navigationTitle(tripDataManager.tripDataArray[tripListIndex!].tripName)
+                    .navigationBarHidden(true)
                 }
+                .navigationViewStyle(StackNavigationViewStyle())
+                //                .navigationViewStyle(StackNavigationViewStyle())修正log錯誤
+                //            note_https://stackoverflow.com/questions/65316497/swiftui-navigationview-navigationbartitle-layoutconstraints-issue
                 HStack{
                     Spacer()
                     Button {
+                        scheduleName = ""
+                        startTime = Date()
+                        endTime = Date()
+                        schedulDate = Date()
+                        scheduleAction = .add
+                        scheduleActionEditIndex = nil
                         showingAddScheduleView = true
                     } label: {
-                        Circle()
-                            .foregroundColor(.green)
-                            .frame(width:80, height: 80)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 5)
-                                    .foregroundColor(.white)
-                                    .frame(width: 20, height: 20)
-                                    .overlay(content: {
-                                        Text("A")
-                                            .foregroundColor(.red)
-                                            .font(.title)
-                                    })
-                            )
+                        VStack {
+                            Image(systemName: "plus.circle")
+                                .resizable()
+                                .foregroundColor(.green)
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 60)
+                            Text("新增行程")
+                                .foregroundColor(.green)
+                        }.padding(.trailing)
                     }
                 }
             } else {
@@ -54,6 +101,20 @@ struct ScheduleView: View {
             }
             
             
+        }
+        .fullScreenCover(isPresented: $showingAddScheduleView) {
+            showingAddScheduleView = false
+        } content: {
+            AddScheduleView(
+                tripDataManager: tripDataManager,
+                tripListIndex: $tripListIndex,
+                scheduleName: $scheduleName,
+                startTime: $startTime,
+                endTime: $endTime,
+                schedulDate: $schedulDate,
+                scheduleAction: $scheduleAction,
+                editIndex: $scheduleActionEditIndex
+            )
         }
     }
 }
