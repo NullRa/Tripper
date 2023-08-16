@@ -160,9 +160,6 @@ struct AddCostItemView: View {
                     }
                 })
                 .listStyle(InsetGroupedListStyle())
-                .onTapGesture {
-                    focusedField = nil
-                }
             }
         }
         .fullScreenCover(isPresented: $showSelectPaidMemberList) {
